@@ -23,3 +23,7 @@ vincentL -- 2019-05-09 14:04
 - added requirements.txt
 - created gitignore
 --------------------------------------------------------------
+vincentL -- 2019-05-13 02:00
+- added a more detailed list of features
+- added a timeline
+- updated sitemap
