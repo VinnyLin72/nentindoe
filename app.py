@@ -1,9 +1,18 @@
-import os, csv, time, datetime, sqlite3, json
+import os, csv, time, datetime, json
 
 from flask import Flask, redirect, url_for, render_template, session, request, flash, get_flashed_messages
 
 from urllib.request import Request, urlopen
 
+from utils import database as arms, api
+
+# manage cookies and user data here
+#instatiate users and pictures table if does not already exist
+DB_FILE = "data/draw.db"
+user = None
+data = arms.DB_Manager(DB_FILE)
+data.createLimitsTable()
+data.createUsersTable()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
