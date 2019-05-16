@@ -20,13 +20,39 @@ app.secret_key = os.urandom(32)
 
 @app.route('/', methods=['POST','GET'])
 def home():
+    if loggedin():
+        return render_template("home.html", logged = True)
     return render_template("home.html")
 
 @app.route("/register")
 def register():
-    if len(session) != 0:
-        return render_template("home.html", logged=True, user=list(session.items())[0][0])
+    if loggedin():
+        return redirect(url_for("home"))
     return render_template("register.html")
+
+
+def loggedin():
+    if len(session) != 0:
+        return True
+    else:
+        return False
+
+@app.route("/login")
+def login():
+    if loggedin():
+        return redirect(url_for("home"))
+    return render_template("login.html")
+
+@app.route('/logout')
+def logout():
+    session.pop()
+    return redirect(url_for("home"))
+
+@app.route('/mainDraw')
+def mainDraw():
+    if loggedin():
+        return render_template("mainDraw.html")
+    return redirect(url_for("home"))
 
 if __name__ == '__main__':
     app.debug = True
