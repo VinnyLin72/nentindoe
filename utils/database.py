@@ -60,7 +60,7 @@ class DB_Manager:
         if not self.isInDB('users'):
             command = 'CREATE TABLE "{0}"({1}, {2}, {3});'.format('users', 'username TEXT', 'password TEXT', 'banned INTEGER')
             c.execute(command)
-        c.save()
+        self.save()
 
     def createPicturesTable(self):
         '''
@@ -70,6 +70,6 @@ class DB_Manager:
         if not self.isInDB('pictures'):
             command = 'CREATE TABLE "{0}"({1}, {2}, {3}, {4}, {5});'.format('pictures', 'picId INTEGER', 'picName TEXT', 'username TEXT', 'caption TEXT', 'private INTEGER')
             c.execute(command)
-        c.save()
+        self.save()
 
 #==========================================================
