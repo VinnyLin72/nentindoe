@@ -1,4 +1,4 @@
-import os, csv, time, datetime, json
+import os, csv, time, sqlite3, datetime, json
 
 from flask import Flask, redirect, url_for, render_template, session, request, flash, get_flashed_messages
 
@@ -22,11 +22,11 @@ app.secret_key = os.urandom(32)
 def home():
     return render_template("home.html")
 
-# @app.route("/register")
-# def register():
-#     if len(session) != 0:
-#         return render_template("home.html", logged=True, user=list(session.items())[0][0])
-#     return render_template("register.html")
+@app.route("/register")
+def register():
+    if len(session) != 0:
+        return render_template("home.html", logged=True, user=list(session.items())[0][0])
+    return render_template("register.html")
 
 if __name__ == '__main__':
     app.debug = True
