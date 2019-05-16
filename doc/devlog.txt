@@ -27,3 +27,6 @@ vincentL -- 2019-05-13 02:00
 - added a more detailed list of features
 - added a timeline
 - updated sitemap
+--------------------------------------------------------------
+zaneW -- 2019-05-16 01:39
+- added a canvas to the page, with a draw method while mouse is held down
