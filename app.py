@@ -4,17 +4,19 @@ from flask import Flask, redirect, url_for, render_template, session, request, f
 
 from urllib.request import Request, urlopen
 
-from util import database as arms
+from util import database as db
 
 # manage cookies and user data here
 #instatiate users and pictures table if does not already exist
-'''
-DB_FILE = "data/draw.db"
-user = None
-data = arms.DB_Manager(DB_FILE)
-data.createLimitsTable()
-data.createUsersTable()
-'''
+
+#-------------------------------------------------------------------------------
+#Testing DB Stuff
+print(db.registerUser("a","a"))
+print(db.registerUser("a","b"))
+
+#-------------------------------------------------------------------------------
+
+
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
 
