@@ -30,3 +30,8 @@ vincentL -- 2019-05-13 02:00
 --------------------------------------------------------------
 zaneW -- 2019-05-16 01:39
 - added a canvas to the page, with a draw method while mouse is held down
+- added a js and css file
+--------------------------------------------------------------
+mohtasimH -- 2019-05-16 02:04
+- added draw.html
+- connected html to css and js
