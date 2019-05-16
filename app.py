@@ -8,12 +8,13 @@ from util import database as arms
 
 # manage cookies and user data here
 #instatiate users and pictures table if does not already exist
+'''
 DB_FILE = "data/draw.db"
 user = None
 data = arms.DB_Manager(DB_FILE)
 data.createLimitsTable()
 data.createUsersTable()
-
+'''
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
 
