@@ -1,6 +1,6 @@
 import sqlite3   # enable control of an sqlite database
 
-def init(dbfile):
+def init():
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
     command = "CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, banned INTEGER);"

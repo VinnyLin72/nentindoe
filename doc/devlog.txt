@@ -35,3 +35,7 @@ zaneW -- 2019-05-16 01:39
 mohtasimH -- 2019-05-16 02:04
 - added draw.html
 - connected html to css and js
+--------------------------------------------------------------
+chanY -- 2019-05-16 03:31
+- added database file and commands
+- added database commands for basic registration and login

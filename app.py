@@ -11,6 +11,7 @@ from util import database as db
 
 #-------------------------------------------------------------------------------
 #Testing DB Stuff
+db.init()
 print(db.registerUser("a","a"))
 print(db.registerUser("a","b"))
 
