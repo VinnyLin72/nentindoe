@@ -1,75 +1,79 @@
 import sqlite3   # enable control of an sqlite database
 
-class DB_Manager:
+def init(dbfile):
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = "CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, banned INTEGER);"
+    c.execute(command)
+    command = 'CREATE TABLE "pictures"(picId, picName, username, caption, private);'
+    c.execute(command)
+    db.commit()
+    db.close()
+
+#========================HELPER FXNS=======================
+
+def table(tableName):
     '''
-    HOW TO USE:
-    Every method openDB by connecting to the inputted path of
-    a database file. After performing all operations on the
-    database, the instance of the DB_Manager must save using
-    the save method.
-    The operations/methods can be found below.
+    PRINTS OUT ALL ROWS OF INPUT tableName
     '''
-    def __init__(self, dbfile):
-        '''
-        SET UP TO READ/WRITE TO DB FILES
-        '''
-        self.DB_FILE = dbfile
-        self.db = None
-    #========================HELPER FXNS=======================
-    def openDB(self):
-        '''
-        OPENS DB_FILE AND RETURNS A CURSOR FOR IT
-        '''
-        self.db = sqlite3.connect(self.DB_FILE) # open if file exists, otherwise create
-        return self.db.cursor()
-
-    def save(self):
-        '''
-        COMMITS CHANGES TO DATABASE AND CLOSES THE FILE
-        '''
-        self.db.commit()
-        self.db.close()
-
-    def isInDB(self, tableName):
-        '''
-        RETURNS True IF THE tableName IS IN THE DATABASE
-        RETURNS False OTHERWISE
-        '''
-        c = self.openDB()
-        command = 'SELECT * FROM sqlite_master WHERE type = "table"'
-        c.execute(command)
-        selectedVal = c.fetchall()
-        # list comprehensions -- fetch all tableNames and store in a set
-        tableNames = set([x[1] for x in selectedVal])
-
-        return tableName in tableNames
-
-    def table(self, tableName):
-        '''
-        PRINTS OUT ALL ROWS OF INPUT tableName
-        '''
-        c = self.openDB()
-        command = 'SELECT * FROM "{0}"'.format(tableName)
-        c.execute(command)
-
-    def createUsersTable(self):
-        '''
-        CREATES A 3 COLUMN users table if it doesnt already exist. Used to store authentication info.
-        '''
-        c = self.openDB()
-        if not self.isInDB('users'):
-            command = 'CREATE TABLE "{0}"({1}, {2}, {3});'.format('users', 'username TEXT', 'password TEXT', 'banned INTEGER')
-            c.execute(command)
-        self.save()
-
-    def createPicturesTable(self):
-        '''
-        CREATES A 5 COLUMN pictures table if it doesnt already exist. Used to store picture data.
-        '''
-        c = self.openDB()
-        if not self.isInDB('pictures'):
-            command = 'CREATE TABLE "{0}"({1}, {2}, {3}, {4}, {5});'.format('pictures', 'picId INTEGER', 'picName TEXT', 'username TEXT', 'caption TEXT', 'private INTEGER')
-            c.execute(command)
-        self.save()
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT * FROM "{0}"'.format(tableName)
+    c.execute(command)
+    db.close()
 
 #==========================================================
+#Users table functions
+def getUsers():
+    '''
+    RETURNS A DICTIONARY CONTAINING ALL CURRENT users AND CORRESPONDING PASSWORDS
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT username, password FROM USERS'
+    c.execute(command)
+    selectedVal = c.fetchall()
+    db.close()
+    return dict(selectedVal)
+
+def findUser(username):
+    '''
+    CHECKS IF userName IS UNIQUE
+    '''
+    return username in getUsers()
+
+def registerUser(userName, password):
+    '''
+    ADDS user TO USERS table. Upon registration, user inputs wanted currency
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    # userName is already in database -- do not continue to add
+    if findUser(userName):
+        db.close()
+        return False
+    # userName not in database -- continue to add
+    else:
+        command = 'INSERT INTO "users" VALUES(?, ?, ?)'
+        c.execute(command, (userName, password, 0))
+        db.commit()
+        db.close()
+        return True
+
+def verifyUser(userName, password):
+    '''
+    CHECKS IF userName AND password MATCH THOSE FOUND IN DATABASE
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT username, password FROM USERS WHERE username = "{0}"'.format(userName)
+    c.execute(command)
+    selectedVal = c.fetchone()
+    if selectedVal == None:
+        db.close()
+        return False
+    if userName == selectedVal[0] and password == selectedVal[1]:
+        db.close()
+        return True
+    db.close()
+    return False
