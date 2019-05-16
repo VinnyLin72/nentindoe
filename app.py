@@ -4,7 +4,7 @@ from flask import Flask, redirect, url_for, render_template, session, request, f
 
 from urllib.request import Request, urlopen
 
-from utils import database as arms, api
+from util import database as arms, api
 
 # manage cookies and user data here
 #instatiate users and pictures table if does not already exist
