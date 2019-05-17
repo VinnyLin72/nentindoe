@@ -5,7 +5,7 @@ def init():
     c = db.cursor()
     command = "CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, banned INTEGER);"
     c.execute(command)
-    command = 'CREATE TABLE "pictures"(picId, picName, username, caption, private);'
+    command = 'CREATE TABLE IF NOT EXISTS"pictures"(picId, picName, username, caption, private);'
     c.execute(command)
     db.commit()
     db.close()
