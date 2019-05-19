@@ -12,8 +12,8 @@ from util import database as db
 #-------------------------------------------------------------------------------
 #Testing DB Stuff
 db.init()
-print(db.registerUser("a","a"))
-print(db.registerUser("a","b"))
+#print(db.registerUser("a","a"))
+# print(db.registerUser("a","b"))
 
 #-------------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ app.secret_key = os.urandom(32)
 @app.route('/', methods=['POST','GET'])
 def home():
     if loggedin():
-        return render_template("home.html", logged = True)
+        return render_template("home.html", logged = True, user = session['user'])
     return render_template("home.html")
 
 @app.route("/register")
@@ -40,7 +40,7 @@ def loggedin():
     else:
         return False
 
-@app.route("/login")
+@app.route("/login", methods = ['POST','GET'])
 def login():
     if loggedin():
         return redirect(url_for("home"))
@@ -55,6 +55,33 @@ def logout():
 def mainDraw():
     if loggedin():
         return render_template("mainDraw.html")
+    return redirect(url_for("home"))
+
+#verify login
+@app.route('/auth', methods=['POST','GET'])
+def auth():
+    print(request.method)
+    username = request.form['username']
+    password = request.form['password']
+    if db.verifyUser(username,password):
+        session['user'] = username
+        return redirect(url_for("home"))
+    else:
+        flash('Username or Password is Incorrect')
+        return redirect(url_for("home"))
+
+@app.route('/adduser', methods=['POST','GET'])
+def adduser():
+    username = request.form['username']
+    password = request.form['password']
+    passwordc = request.form['confirm-password']
+    if db.findUser(username) == True:
+        flash ("Username already exists")
+        return redirect(url_for("register"))
+    if password != passwordc:
+        flash ("Passwords don't match")
+        return redirect(url_for("register"))
+    db.registerUser(username,password)
     return redirect(url_for("home"))
 
 if __name__ == '__main__':
