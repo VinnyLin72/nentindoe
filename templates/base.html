@@ -35,7 +35,7 @@
                         <a class="nav-link" href="#">Gallery</a>
                     </li>
 
-                    {% if logged %}
+                    {% if 'user' in session %}
 
                     <li class="nav-item">
                         <a class="nav-link" href="#">My Drawings</a>
@@ -48,7 +48,7 @@
                         <a class="nav-link" href="#">My Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/signout">Log Out</a>
+                        <a class="nav-link" href="/logout">Log Out</a>
                     </li>
 
                     {% else %}
