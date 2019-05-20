@@ -24,6 +24,8 @@ app.secret_key = os.urandom(32)
 @app.route('/', methods=['POST','GET'])
 def home():
     if loggedin():
+        print("this is session:")
+        print(session)
         return render_template("home.html", user = session['user'])
     return render_template("home.html")
 
@@ -35,7 +37,7 @@ def register():
 
 
 def loggedin():
-    if len(session) != 0:
+    if 'user' in session:
         return True
     else:
         return False
@@ -50,7 +52,7 @@ def login():
 def logout():
     if loggedin():
         session.pop()
-    return redirect(url_for("home"))    
+    return redirect(url_for("home"))
 
 
 @app.route('/mainDraw')
@@ -70,7 +72,7 @@ def auth():
         return redirect(url_for("home"))
     else:
         flash('Username or Password is Incorrect')
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
 
 @app.route('/adduser', methods=['POST','GET'])
 def adduser():
