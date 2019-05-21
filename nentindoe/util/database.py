@@ -69,12 +69,15 @@ def verifyUser(username, password):
     command = 'SELECT username, password FROM USERS WHERE username = "{0}";'.format(username)
     c.execute(command)
     selectedVal = c.fetchone()
+    #username does not exist
     if selectedVal == None:
         db.close()
         return False
+    #correct
     if username == selectedVal[0] and password == selectedVal[1]:
         db.close()
         return True
+    #username or password wrong
     db.close()
     return False
 
@@ -94,10 +97,49 @@ def getPictures(username):
     db.close()
     return ans
 
+def getImage(username, picName):
+    '''
+    Returns a dictionary of the image file name as the key and the caption as the value
+    '''
+    #if the picName is not in use already
+    if picName not in getPictures(username):
+        return 0
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'SELECT picId, caption FROM pictures WHERE username = ? AND picName = ?;'
+        c.execute(command,(username,picName,))
+        selectedVal = c.fetchall()
+        print(selectedVal)
+        ans = {}
+        for x in selectedVal:
+            ans[picName + "_" + str(x[0]) + ".png"] = x[1]
+        db.close()
+        return ans
+
+def getImageId(username, picName):
+    '''
+    retuns the image id of a specified image or 0 if it dont exist
+    '''
+    if picName not in getPictures(username):
+        return 0
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'SELECT picId FROM pictures WHERE username = ? AND picName = ?;'
+        c.execute(command,(username,picName,))
+        selectedVal = c.fetchall()
+        db.close()
+        return selectedVal[0][0]
+
 def saveImage(username, picName, caption, private):
     '''
-    ADDS picture TO pictures table
+    ADDS picture TO pictures table, returns the image id
     '''
+    if username not in getUsers():
+        return -1
+    if picName in getPictures(username):
+        return 0
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
     # username not in database -- continue to add
@@ -105,16 +147,16 @@ def saveImage(username, picName, caption, private):
         private = 1
     else:
         private = 0
-    if picName in getPictures(username):
-        db.close()
-        return False
     command = 'INSERT INTO pictures VALUES(?, ?, ?, ?, ?);'
     c.execute(command, (None, picName, username, caption, private))
     db.commit()
     db.close()
-    return True
+    return getImageId(username, picName)
 
 def removeImage(username, picName):
+    '''
+    removes an image from the db
+    '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
     if picName not in getPictures(username):
