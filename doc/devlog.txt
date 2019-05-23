@@ -41,5 +41,8 @@ chanY -- 2019-05-16 03:31
 - added database commands for basic registration and login
 --------------------------------------------------------------
 vincentL -- 2019-05-21 11:42
--reconfigured repo for droplet
--droplet now has pull access to repo
+- reconfigured repo for droplet
+- droplet now has pull access to repo
+--------------------------------------------------------------
+vincentL -- 2019-05-23 12:31
+- updated design doc
