@@ -4,7 +4,7 @@ var wipe = document.getElementById("clear");
 var mouseDown = false;
 
 draw.fillStyle = "#0000ff"; //makes blue
-draw.strokeStyle = "#0000ff"; 
+draw.strokeStyle = "#0000ff";
 
 var driver = function(e) {
     console.log("in driver");
@@ -55,7 +55,20 @@ var clear = function() {
 }
 
 wipe.addEventListener("click", clear);
+
+
+function downloadImage() {
+    var element = document.createElement('a');
+    element.setAttribute('href', board.toDataURL('image/png'));
+    element.setAttribute('download', 'chart.png');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    // element.click();
+    // document.body.removeChild(element);
+}
 /*
+
+
 
 var colorHold = function() {
     if (e.type == 'mousedown') {
@@ -80,8 +93,8 @@ function callEvent()
     if (hold)
     {
 	color
-	
-	
+
+
 	animationFrame("callEvent()",1);
     }
     else
