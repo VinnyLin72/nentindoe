@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.6
 import os, csv, time, sqlite3, datetime, json
 
 from flask import Flask, redirect, url_for, render_template, session, request, flash, get_flashed_messages
