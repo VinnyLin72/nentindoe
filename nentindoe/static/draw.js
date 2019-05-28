@@ -1,61 +1,70 @@
 var board = document.getElementById("slate");
 var draw = board.getContext("2d");
 var wipe = document.getElementById("clear");
+var line = document.getElementById("line");
 var mouseDown = false;
+var mode = "draw";
 
 draw.fillStyle = "#0000ff"; //makes blue
 draw.strokeStyle = "#0000ff";
 
+// fxn driving the drawing
 var driver = function(e) {
-    console.log("in driver");
-    if (e.type == "mousedown") {
-	mouseDown = true;
-	draw.beginPath();
-	draw.arc(e.offsetX, e.offsetY, 1, 0, 2 * Math.PI);
+    if (mode == "draw") {
+	console.log("in driver");
+	if (e.type == "mousedown") {
+	    mouseDown = true;
+	    draw.beginPath();
+	    draw.arc(e.offsetX, e.offsetY, 1, 0, 2 * Math.PI);
+	    draw.stroke();
+	    draw.fill();
+	}
+	else if (e.type == "mousemove" && mouseDown) {
+	    draw.beginPath();
+	    //draw.lineTo();
+	    draw.arc(e.offsetX, e.offsetY, 1, 0, 2 * Math.PI);
 	draw.stroke();
-	draw.fill();
+	    draw.fill();
+	}
+	else {
+	    mouseDown = false;
+	    draw.closePath();
+	}
     }
-    else if (e.type == "mousemove" && mouseDown) {
-	draw.beginPath();
-	//draw.lineTo();
-	draw.arc(e.offsetX, e.offsetY, 1, 0, 2 * Math.PI);
-	draw.stroke();
-	draw.fill();
-    }
-    else {
-	mouseDown = false;
-	draw.closePath();
+    else if (mode == "line") {
+	if (e.type == "mousedown") {
+	    draw.lineTo(e.offsetX, e.offsetY);
+	    draw.moveTo(e.offsetX, e.offsetY);
+	    draw.stroke();
+	    draw.closePath();
+	    console.log("closing path");
+	}
     }
 }
 
 board.addEventListener("mousedown", driver);
 board.addEventListener("mousemove", driver);
 board.addEventListener("mouseup", driver);
-/*
-var startColor = function() {
-    console.log("got here");
-    draw.beginPath();
-}
 
-var color = function(e) {
-    draw.beginPath();
-    draw.arc(e.clientX, e.clientY, 1, 0, 2 * Math.PI);
-    draw.stroke();
-    draw.closePath();
-    draw.beginPath();
-    console.log("got here");
-}
-
-board.addEventListener("mousedown", startColor);
-board.addEventListener("moveto", color);
-board.addEventListener("mouseup", draw.closePath());
-*/
+// clear fxn
 var clear = function() {
     draw.clearRect(0, 0, board.width, board.height);
+    draw.beginPath();
 }
 
 wipe.addEventListener("click", clear);
 
+//line fxn
+var zip = function() {
+    if (mode != "line") {
+	mode = "line";
+    }
+    else {
+	mode = "draw";
+    }
+}
+
+line.addEventListener("mousedown", zip);
 
 function downloadImage() {
     var element = document.createElement('a');
@@ -66,38 +75,3 @@ function downloadImage() {
     // element.click();
     // document.body.removeChild(element);
 }
-/*
-
-
-
-var colorHold = function() {
-    if (e.type == 'mousedown') {
-	console.log(e.type);
-    }
-    console.log(e.type);
-}
-
-board.addEventListener('mousedown mouseup', colorHold);
-
-function mousedown()
-{
-    hold = true;
-    callEvent();
-}
-function mouseup()
-{
-    hold = false;
-}
-function callEvent()
-{
-    if (hold)
-    {
-	color
-
-
-	animationFrame("callEvent()",1);
-    }
-    else
-	return;
-}
-*/
