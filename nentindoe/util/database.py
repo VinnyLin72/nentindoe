@@ -7,6 +7,12 @@ def init():
     c.execute(command)
     command = 'CREATE TABLE IF NOT EXISTS pictures (picId INTEGER PRIMARY KEY, picName TEXT, username TEXT, caption TEXT, private INTEGER);'
     c.execute(command)
+    command = 'CREATE TABLE IF NOT EXISTS allGroups (groupName TEXT UNIQUE);'
+    c.execute(command)
+    command = 'CREATE TABLE IF NOT EXISTS groupPics (picId INTEGER, groupName TEXT, banned INTEGER);'
+    c.execute(command)
+    command = 'CREATE TABLE IF NOT EXISTS groupMembership (username TEXT, groupName TEXT, admin INTEGER, request INTEGER, banned INTEGER);'
+    c.execute(command)
     db.commit()
     db.close()
 
@@ -167,3 +173,85 @@ def removeImage(username, picName):
     db.commit()
     db.close()
     return True
+
+#==========================================================
+#creating group functions
+
+def getGroups():
+    '''
+    RETURNS A DICTIONARY CONTAINING ALL CURRENT users AND CORRESPONDING PASSWORDS
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT * FROM allGroups;'
+    c.execute(command)
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def findGroup(groupName):
+    '''
+    CHECKS IF username IS UNIQUE
+    '''
+    return groupName in getGroups()
+
+def createGroup(username, groupName):
+    '''
+    ADDS user TO USERS table. Upon registration, user inputs wanted currency
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    # username is already in database -- do not continue to add
+    if findGroup(groupName):
+        db.close()
+        return False
+    # username not in database -- continue to add
+    else:
+        command = 'INSERT INTO "allGroups" VALUES(?);'
+        c.execute(command, (username,))
+        command = 'INSERT INTO "groupMembership" VALUES(?,?,?,?,?);'
+        c.execute(command, (username,groupName,1,0,0))
+        db.commit()
+        db.close()
+        return True
+
+#==========================================================
+#requesting group functions
+def getRequests(username):
+    '''
+    RETURNS A DICTIONARY CONTAINING ALL CURRENT users AND CORRESPONDING PASSWORDS
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT groupName FROM groupMembership WHERE username = (?);'
+    c.execute(command,(username,))
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def groupInRequests(username, groupName):
+    '''
+    CHECKS IF username IS UNIQUE
+    '''
+    return groupName in getRequests(username)
+
+def requestGroup(username, groupName):
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    # username is already in database -- do not continue to add
+    if groupInRequests(groupName):
+        db.close()
+        return False
+    # username not in d
+    else:
+        command = 'INSERT INTO "groupMembership" VALUES(?,?,?,?,?);'
+        c.execute(command, (username,groupName,0,1,0))
+        db.commit()
+        db.close()
+        return True
+#==========================================================
+#accepting requesting functions
+def acceptRequest():
+    pass
