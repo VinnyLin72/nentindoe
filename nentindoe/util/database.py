@@ -206,7 +206,7 @@ def createGroup(username, groupName):
     # username not in database -- continue to add
     else:
         command = 'INSERT INTO "allGroups" VALUES(?);'
-        c.execute(command, (username,))
+        c.execute(command, (groupName,))
         command = 'INSERT INTO "groupMembership" VALUES (?,?,?,?,?);'
         c.execute(command, (username,groupName,1,0,0))
         db.commit()
@@ -293,7 +293,7 @@ def getRequests(username):
     val = {}
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
-    for groupName in adminGroups():
+    for groupName in adminGroups:
         command = 'SELECT username FROM groupMembership WHERE groupName = (?) AND request = 1;'
         c.execute(command,(groupName,))
         selectedVal = c.fetchall()
@@ -309,9 +309,9 @@ def evalRequest(groupName, admin, member, value):
     requests = getRequests(admin)
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
-    if groupName not in request.keys():
+    if groupName not in requests.keys():
         return False
-    if member not in request[groupName]:
+    if member not in requests[groupName]:
         return False
 
     if value == 1:
@@ -373,13 +373,13 @@ def banMember(groupName, member):
     '''
     Bans a member only if the member is alredy in the group and not an Admin
     '''
-    if member not in getMembers():
+    if member not in getMembers(groupName):
         return False
     else:
         db = sqlite3.connect("data/draw.db")
         c = db.cursor()
         command = 'UPDATE groupMembership SET banned = 1 WHERE groupName = (?) AND username = (?);'
-        c.execute(command,(groupName, username))
+        c.execute(command,(groupName, member))
         db.commit()
         db.close()
         return True
@@ -388,13 +388,13 @@ def unbanMember(groupName, member):
     '''
     unBans a member only if the member is alredy in the group and already banned
     '''
-    if member not in getBanned():
+    if member not in getBanned(groupName):
         return False
     else:
         db = sqlite3.connect("data/draw.db")
         c = db.cursor()
         command = 'UPDATE groupMembership SET banned = 0 WHERE groupName = (?) AND username = (?);'
-        c.execute(command,(groupName, username))
+        c.execute(command,(groupName, member))
         db.commit()
         db.close()
         return True
@@ -403,13 +403,13 @@ def kickMember(groupName, member):
     '''
     Kicks a member or admin only if the member is alredy in the group
     '''
-    if member not in getMembers() or member not in getAdmins():
+    if member not in getMembers(groupName) and member not in getAdmins(groupName):
         return False
     else:
         db = sqlite3.connect("data/draw.db")
         c = db.cursor()
         command = 'DELETE FROM groupMembership WHERE groupName = (?) AND username = (?);'
-        c.execute(command,(groupName, username))
+        c.execute(command,(groupName, member))
         db.commit()
         db.close()
         return True
@@ -418,13 +418,13 @@ def promoteMember(groupName, member):
     '''
     Promotes a member only if the member is alredy in the group and not an admin
     '''
-    if member not in getMembers():
+    if member not in getMembers(groupName):
         return False
     else:
         db = sqlite3.connect("data/draw.db")
         c = db.cursor()
         command = 'UPDATE groupMembership SET admin = 1 WHERE groupName = (?) AND username = (?);'
-        c.execute(command,(groupName, username))
+        c.execute(command,(groupName, member))
         db.commit()
         db.close()
         return True
@@ -433,13 +433,13 @@ def demoteMember(groupName, member):
     '''
     demotes an admin
     '''
-    if member not in getAdmins():
+    if member not in getAdmins(groupName):
         return False
     else:
         db = sqlite3.connect("data/draw.db")
         c = db.cursor()
         command = 'UPDATE groupMembership SET admin = 0 WHERE groupName = (?) AND username = (?);'
-        c.execute(command,(groupName, username))
+        c.execute(command,(groupName, member))
         db.commit()
         db.close()
         return True
@@ -467,7 +467,7 @@ def getGroupPicIds(groupName):
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
     command = 'SELECT picId FROM groupPics WHERE groupName = (?);'
-    c.execute(command, (groupName))
+    c.execute(command, (groupName,))
     selectedVal = c.fetchall()
     ans = [x[0] for x in selectedVal]
     db.close()
@@ -475,13 +475,13 @@ def getGroupPicIds(groupName):
 
 def addGroupPic(username, picName, groupName):
     imgId = getImageId(username, picName)
-    if imgId not in getGroupPicIds(groupName):
+    if imgId in getGroupPicIds(groupName):
         return False
     else:
         db = sqlite3.connect("data/draw.db")
         c = db.cursor()
         command = 'INSERT INTO groupPics VALUES(?, ?, ?);'
         c.execute(command, (imgId, groupName, 0))
-        c.commit()
-        c.close()
+        db.commit()
+        db.close()
         return True
