@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <meta name="google-signin-client_id" content="129730780067-3ofkk2qqkoronvs4aclpfb7s7i2jq3c7.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="129730780067-urvgcmog4uedg5mna4m3l7jb42s8ovmp.apps.googleusercontent.com">
     <title>test</title>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
   </head>
@@ -26,9 +26,9 @@
     <script>
       function signOut(){
         var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function(){
-          document.getElementById('profileinfo'.innerHTML = "";
-        });
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+        })
       }
     </script>
   </body>
