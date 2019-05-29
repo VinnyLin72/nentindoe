@@ -1,15 +1,16 @@
-# Nentindoe - Vincent Lin, Yin On Chan, Mohtasim Howlader, Zane Wang
+# Nentindoe
+### Vincent Lin(PM), Yin On Chan, Mohtasim Howlader, Zane Wang
 
-## DESCRIPTION
+## Description
 A website where users will be able to log in using their emails to create images, from scratch or drawing on existing images, and post them publicly. Users will be able draw on a canvas using a variety of “tools” and colors, users will be able to import images they wish to edit onto the web app, draw on it, and save or upload the new image. Users will be able to create groups to privately share images amongst friends.
 
-## DEPENDENCIES
+## Dependencies
 - Flask==1.0.2
   Framework
 - Jinja2==2.10.1
   Templating
 
-## LAUNCH CODES
+## Launch Codes
 1. Open a terminal session.
 2. Create your own environment by typing (name is a placeholder for the name of the virtual environment of your choosing):
 ```
