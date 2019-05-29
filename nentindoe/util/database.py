@@ -17,7 +17,6 @@ def init():
     db.close()
 
 #========================HELPER FXNS=======================
-
 def table(tableName):
     '''
     PRINTS OUT ALL ROWS OF INPUT tableName
@@ -50,7 +49,7 @@ def findUser(username):
 
 def registerUser(username, password):
     '''
-    ADDS user TO USERS table. Upon registration, user inputs wanted currency
+    ADDS user TO USERS table
     '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
@@ -60,7 +59,7 @@ def registerUser(username, password):
         return False
     # username not in database -- continue to add
     else:
-        command = 'INSERT INTO "users" VALUES(?, ?, ?);'
+        command = 'INSERT INTO "users" VALUES (?, ?, ?);'
         c.execute(command, (username, password, 0))
         db.commit()
         db.close()
@@ -86,7 +85,6 @@ def verifyUser(username, password):
     #username or password wrong
     db.close()
     return False
-
 
 #==========================================================
 #Users table functions
@@ -129,7 +127,7 @@ def getImageId(username, picName):
     '''
     if picName not in getPictures(username):
         return 0
-    else:
+    else: #only if the picName in use
         db = sqlite3.connect("data/draw.db")
         c = db.cursor()
         command = 'SELECT picId FROM pictures WHERE username = ? AND picName = ?;'
@@ -142,9 +140,9 @@ def saveImage(username, picName, caption, private):
     '''
     ADDS picture TO pictures table, returns the image id
     '''
-    if username not in getUsers():
+    if username not in getUsers(): #the user does not exist
         return -1
-    if picName in getPictures(username):
+    if picName in getPictures(username): #the picture already exists
         return 0
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
@@ -157,7 +155,7 @@ def saveImage(username, picName, caption, private):
     c.execute(command, (None, picName, username, caption, private))
     db.commit()
     db.close()
-    return getImageId(username, picName)
+    return getImageId(username, picName) #returns the pic id
 
 def removeImage(username, picName):
     '''
@@ -165,7 +163,7 @@ def removeImage(username, picName):
     '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
-    if picName not in getPictures(username):
+    if picName not in getPictures(username): #if the pic does not exist
         db.close()
         return False
     command = 'DELETE FROM pictures WHERE username = ? AND picName = ?;'
@@ -176,10 +174,9 @@ def removeImage(username, picName):
 
 #==========================================================
 #creating group functions
-
 def getGroups():
     '''
-    RETURNS A DICTIONARY CONTAINING ALL CURRENT users AND CORRESPONDING PASSWORDS
+    RETURNS A LIST CONTAINING ALL CURRENT groups
     '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
@@ -192,13 +189,13 @@ def getGroups():
 
 def findGroup(groupName):
     '''
-    CHECKS IF username IS UNIQUE
+    CHECKS IF groupName IS UNIQUE
     '''
     return groupName in getGroups()
 
 def createGroup(username, groupName):
     '''
-    ADDS user TO USERS table. Upon registration, user inputs wanted currency
+    ADDS group TO allGroups TABLE. ADDS A LISTING TO THE groupMembership TABLE
     '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
@@ -210,7 +207,7 @@ def createGroup(username, groupName):
     else:
         command = 'INSERT INTO "allGroups" VALUES(?);'
         c.execute(command, (username,))
-        command = 'INSERT INTO "groupMembership" VALUES(?,?,?,?,?);'
+        command = 'INSERT INTO "groupMembership" VALUES (?,?,?,?,?);'
         c.execute(command, (username,groupName,1,0,0))
         db.commit()
         db.close()
@@ -218,40 +215,273 @@ def createGroup(username, groupName):
 
 #==========================================================
 #requesting group functions
-def getRequests(username):
+def getJoined(username):
     '''
-    RETURNS A DICTIONARY CONTAINING ALL CURRENT users AND CORRESPONDING PASSWORDS
+    RETURNS A LIST CONTAINING ALL joined groups FOR A user
     '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
-    command = 'SELECT groupName FROM groupMembership WHERE username = (?);'
+    command = 'SELECT groupName FROM groupMembership WHERE username = (?) and request = 0;'
     c.execute(command,(username,))
     selectedVal = c.fetchall()
     ans = [x[0] for x in selectedVal]
     db.close()
     return ans
 
-def groupInRequests(username, groupName):
+def getPending(username):
     '''
-    CHECKS IF username IS UNIQUE
+    RETURNS A LIST CONTAINING ALL pending groups FOR A user
     '''
-    return groupName in getRequests(username)
-
-def requestGroup(username, groupName):
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
-    # username is already in database -- do not continue to add
-    if groupInRequests(groupName):
+    command = 'SELECT groupName FROM groupMembership WHERE username = (?) and request = 1;'
+    c.execute(command,(username,))
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def groupInPending(username, groupName):
+    '''
+    CHECKS IF the group is in the users pending groups
+    '''
+    return groupName in getPending(username)
+
+def groupInJoined(username, groupName):
+    '''
+    CHECKS IF the group is in the users joined groups
+    '''
+    return groupName in getJoined(username)
+
+def requestGroup(username, groupName):
+    '''
+    Send a request to a group from the current user
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    if groupInPending(username,groupName) or groupInJoined(username, groupName): # user does not have a request active on this group or is already in it
         db.close()
         return False
-    # username not in d
     else:
-        command = 'INSERT INTO "groupMembership" VALUES(?,?,?,?,?);'
+        command = 'INSERT INTO "groupMembership" VALUES (?,?,?,?,?);'
         c.execute(command, (username,groupName,0,1,0))
         db.commit()
         db.close()
         return True
+
 #==========================================================
 #accepting requesting functions
-def acceptRequest():
-    pass
+def getAdminGroups(username):
+    '''
+    RETURNS A LIST CONTAINING ALL groups where the user is an admin
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT groupName FROM groupMembership WHERE username = (?) AND admin = 1;'
+    c.execute(command,(username,))
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def getRequests(username):
+    '''
+    RETURNS A DICTIONARY OF ALL the groups, that the User is an admin in, as keys
+    and a list of the users that requested to join those groups as the values
+    '''
+    adminGroups = getAdminGroups(username)
+    val = {}
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    for groupName in adminGroups():
+        command = 'SELECT username FROM groupMembership WHERE groupName = (?) AND request = 1;'
+        c.execute(command,(groupName,))
+        selectedVal = c.fetchall()
+        ans = [x[0] for x in selectedVal]
+        val[groupName] = ans
+    db.close()
+    return val
+
+def evalRequest(groupName, admin, member, value):
+    '''
+    If value is 1 then accepts the request, if value is 0 then it denys the request
+    '''
+    requests = getRequests(admin)
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    if groupName not in request.keys():
+        return False
+    if member not in request[groupName]:
+        return False
+
+    if value == 1:
+        command = 'UPDATE groupMembership SET request = 0 WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, member))
+        db.commit()
+        db.close()
+        return True
+    elif value == 0:
+        command = 'DELETE FROM groupMembership WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, member))
+        db.commit()
+        db.close()
+        return True
+    return False
+
+#==========================================================
+#group administration functions
+def getMembers(groupName):
+    '''
+    RETURNS A LIST of all members given a groupName
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT username FROM groupMembership WHERE groupName = (?) AND admin = 0 AND request = 0 AND banned = 0;'
+    c.execute(command,(groupName,))
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def getAdmins(groupName):
+    '''
+    RETURNS A LIST of all admins given a groupName
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT username FROM groupMembership WHERE groupName = (?) AND admin = 1 AND request = 0 AND banned = 0;'
+    c.execute(command,(groupName,))
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def getBanned(groupName):
+    '''
+    RETURNS A LIST of all banned members given a groupName
+    '''
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT username FROM groupMembership WHERE groupName = (?) AND request = 0 AND banned = 1;'
+    c.execute(command,(groupName,))
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def banMember(groupName, member):
+    '''
+    Bans a member only if the member is alredy in the group and not an Admin
+    '''
+    if member not in getMembers():
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'UPDATE groupMembership SET banned = 1 WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, username))
+        db.commit()
+        db.close()
+        return True
+
+def unbanMember(groupName, member):
+    '''
+    unBans a member only if the member is alredy in the group and already banned
+    '''
+    if member not in getBanned():
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'UPDATE groupMembership SET banned = 0 WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, username))
+        db.commit()
+        db.close()
+        return True
+
+def kickMember(groupName, member):
+    '''
+    Kicks a member or admin only if the member is alredy in the group
+    '''
+    if member not in getMembers() or member not in getAdmins():
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'DELETE FROM groupMembership WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, username))
+        db.commit()
+        db.close()
+        return True
+
+def promoteMember(groupName, member):
+    '''
+    Promotes a member only if the member is alredy in the group and not an admin
+    '''
+    if member not in getMembers():
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'UPDATE groupMembership SET admin = 1 WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, username))
+        db.commit()
+        db.close()
+        return True
+
+def demoteMember(groupName, member):
+    '''
+    demotes an admin
+    '''
+    if member not in getAdmins():
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'UPDATE groupMembership SET admin = 0 WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, username))
+        db.commit()
+        db.close()
+        return True
+
+def deleteGroup(groupName):
+    '''
+    Deletes a group.
+    '''
+    if group not in getGroups():#if the group does not exist
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'DELETE FROM groupMembership WHERE groupName = (?);'
+        c.execute(command,(groupName))
+        command = 'DELETE FROM allGroups WHERE groupName = (?);'
+        c.execute(command,(groupName))
+        db.commit()
+        db.close()
+        return True
+
+#==========================================================
+#group imaging functions
+def getGroupPicIds(groupName):
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'SELECT picId FROM groupPics WHERE groupName = (?);'
+    c.execute(command, (groupName))
+    selectedVal = c.fetchall()
+    ans = [x[0] for x in selectedVal]
+    db.close()
+    return ans
+
+def addGroupPic(username, picName, groupName):
+    imgId = getImageId(username, picName)
+    if imgId not in getGroupPicIds(groupName):
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'INSERT INTO groupPics VALUES(?, ?, ?);'
+        c.execute(command, (imgId, groupName, 0))
+        c.commit()
+        c.close()
+        return True
