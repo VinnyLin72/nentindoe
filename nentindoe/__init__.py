@@ -89,6 +89,11 @@ def adduser():
     db.registerUser(username,password)
     return redirect(url_for("home"))
 
+@app.route('/myGroups')
+def myGroups():
+    if loggedin():
+        return render_template("myGroups.html")
+    return redirect(url_for("home"))
 
 
 if __name__ == '__main__':
