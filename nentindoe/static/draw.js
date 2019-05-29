@@ -4,6 +4,7 @@ var wipe = document.getElementById("clear");
 var line = document.getElementById("line");
 var mouseDown = false;
 var mode = "draw";
+var thickness = 1;
 
 draw.fillStyle = "#0000ff"; //makes blue
 draw.strokeStyle = "#0000ff";
@@ -15,15 +16,14 @@ var driver = function(e) {
 	if (e.type == "mousedown") {
 	    mouseDown = true;
 	    draw.beginPath();
-	    draw.arc(e.offsetX, e.offsetY, 1, 0, 2 * Math.PI);
+	    draw.arc(e.offsetX, e.offsetY, thickness, 0, 2 * Math.PI);
 	    draw.stroke();
 	    draw.fill();
 	}
 	else if (e.type == "mousemove" && mouseDown) {
 	    draw.beginPath();
-	    //draw.lineTo();
-	    draw.arc(e.offsetX, e.offsetY, 1, 0, 2 * Math.PI);
-	draw.stroke();
+	    draw.arc(e.offsetX, e.offsetY, thickness, 0, 2 * Math.PI);
+	    draw.stroke();
 	    draw.fill();
 	}
 	else {
@@ -33,6 +33,7 @@ var driver = function(e) {
     }
     else if (mode == "line") {
 	if (e.type == "mousedown") {
+	    draw.lineWidth = thickness;
 	    draw.lineTo(e.offsetX, e.offsetY);
 	    draw.moveTo(e.offsetX, e.offsetY);
 	    draw.stroke();
@@ -58,6 +59,7 @@ wipe.addEventListener("click", clear);
 var zip = function() {
     if (mode != "line") {
 	mode = "line";
+	draw.beginPath();
     }
     else {
 	mode = "draw";
