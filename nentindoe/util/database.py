@@ -444,6 +444,23 @@ def demoteMember(groupName, member):
         db.close()
         return True
 
+def addMember(groupName, member):
+    '''
+    admin adds a member
+    '''
+    if member not in getAdmins(groupName) and member not in getMembers() and member not in getBanned():
+        return False
+    else:
+        requestGroup(member, groupName)
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'UPDATE groupMembership SET request = 0 WHERE groupName = (?) AND username = (?);'
+        c.execute(command,(groupName, member))
+        db.commit()
+        db.close()
+        return True
+
+
 def deleteGroup(groupName):
     '''
     Deletes a group.
