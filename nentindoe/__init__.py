@@ -52,7 +52,7 @@ def login():
 @app.route('/logout')
 def logout():
     if loggedin():
-        session.pop()
+        session.pop('user')
     return redirect(url_for("home"))
 
 
@@ -94,6 +94,14 @@ def myGroups():
     if loggedin():
         return render_template("myGroups.html")
     return redirect(url_for("home"))
+
+@app.route('/newGroup')
+def newGroup():
+    if loggedin():
+        return render_template("newGroup.html")
+    return redirect(url_for("home"))
+
+
 
 
 if __name__ == '__main__':
