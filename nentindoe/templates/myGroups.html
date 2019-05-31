@@ -10,26 +10,30 @@
 </div>
 
 <div class="container-fluid">
-  <div class="block-center">
-    <div class="row">
-      {% for g in groupList %}
-      <div class="col-sm-4" style="padding-top: 10px;">
-        <div class="card" style="width: 24rem;">
-          <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src="">
-            <div class="card-body">
-            <h5 class="card-title">{{g}}</h5>
-            <p class="card-text">
-              By:
-            </p>
-            <form action="viewGroup">
-              <button class="btn btn-primary" type="submit" name="recipe-id" value="test">Read more</button>
-            </form>
+    <div class="block-center">
+        <div class="row">
+            <div class="col-sm-10">
+                {% for g in groupList %}
+                <div class="col-sm-4" style="padding-top: 10px;">
+                    <div class="card" style="width: 24rem;">
+                        <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src="">
+                        <div class="card-body">
+                            <h5 class="card-title">{{g}}</h5>
+                            <p class="card-text">
+                                By:
+                            </p>
+                            <form action="viewGroup">
+                                <button class="btn btn-primary" type="submit" name="recipe-id" value="test">Read more</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-sm-2">
+                <a href="/newGroup" class="btn btn-primary"> Create a New Group </a>
             </div>
         </div>
-      </div>
-      {% endfor %}
     </div>
-  </div>
 </div>
-
 {% endblock %}

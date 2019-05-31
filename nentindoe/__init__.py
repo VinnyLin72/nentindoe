@@ -92,13 +92,22 @@ def adduser():
 @app.route('/myGroups')
 def myGroups():
     if loggedin():
-        return render_template("myGroups.html")
+        my_groups=db.getJoined(session['user'])
+        return render_template("myGroups.html", groupList = my_groups)
     return redirect(url_for("home"))
 
 @app.route('/newGroup')
 def newGroup():
     if loggedin():
         return render_template("newGroup.html")
+    return redirect(url_for("home"))
+
+@app.route('/newGroupAuth', methods=["POST","GET"])
+def newGroupAuth():
+    if loggedin():
+        groupname=request.form["groupName"]
+        db.createGroup(session['user'],groupname)
+        return redirect(url_for("myGroups"))
     return redirect(url_for("home"))
 
 

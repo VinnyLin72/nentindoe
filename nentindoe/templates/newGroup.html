@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="page-header">
+        <h1>Create a New Group </h1>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <form action="/newGroupAuth" method="post">
+        <div class="col-6">
+            <div class="form-group m-4">
+                <label for="groupName">Name of Group</label>
+                <input type="text" class="form-control" id="groupName" name="groupName" value="">
+            </div>
+        </div>
+        <button type="submit" name="button">Create Group</button>
+    </form>
+</div>
+
+{% endblock %}
