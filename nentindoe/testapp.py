@@ -1,30 +1,27 @@
 #!/usr/bin/python3.6
-import os, csv, time, sqlite3, datetime, json
+import json, functools
 
-from flask import Flask, redirect, url_for, render_template, session, request, flash, get_flashed_messages
+from flask import Flask
 
-from urllib.request import Request, urlopen
+from authlib.client import OAuth2Session
+import google.oauth2.credentials
+import googleapiclient.discovery
 
-from util import database as db
-
-# manage cookies and user data here
-#instatiate users and pictures table if does not already exist
-
-#-------------------------------------------------------------------------------
-#Testing DB Stuff
-db.init()
-#print(db.registerUser("a","a"))
-# print(db.registerUser("a","b"))
-
-#-------------------------------------------------------------------------------
-
+import google_auth
 
 app = Flask(__name__)
-app.secret_key = os.urandom(32)
+app.secret_key = "spookyKey"
 
-@app.route('/', methods=['POST','GET'])
-def home():
-    return render_template("oauthtest.html")
+app.register_blueprint(google_auth.app)
+
+@app.route('/')
+def index():
+    if google_auth.is_logged_in():
+        user_info = google_auth.get_user_info()
+        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
+
+    return 'You are not currently logged in.'
+
 
 if __name__ == '__main__':
     app.debug = True
