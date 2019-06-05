@@ -16,14 +16,14 @@
                 {% for g in groupList %}
                 <div class="col-sm-4" style="padding-top: 10px;">
                     <div class="card" style="width: 24rem;">
-                        <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src="">
+                        <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src="" alt="No images in this group">
                         <div class="card-body">
                             <h5 class="card-title">{{g}}</h5>
                             <p class="card-text">
                                 By:
                             </p>
-                            <form action="viewGroup">
-                                <button class="btn btn-primary" type="submit" name="recipe-id" value="test">Read more</button>
+                            <form action="/viewGroup">
+                                <button class="btn btn-primary" type="submit" name="gButton" value="test">Enter Group</button>
                             </form>
                         </div>
                     </div>
