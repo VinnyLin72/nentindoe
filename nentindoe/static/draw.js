@@ -71,6 +71,9 @@ line.addEventListener("mousedown", zip);
 
 //update stroke length
 var update = function() {
+    draw.beginPath();
+    draw.lineWidth = thickness;
+    thickness = stroke.value;
     console.log("got to update");
 }
 
@@ -85,3 +88,4 @@ function downloadImage() {
     // element.click();
     // document.body.removeChild(element);
 }
+
