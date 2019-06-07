@@ -6,3 +6,5 @@ Jinja2==2.10.1
 MarkupSafe==1.0
 passlib==1.7.1
 Werkzeug==0.14.1
+google-api-python-client
+google-auth
