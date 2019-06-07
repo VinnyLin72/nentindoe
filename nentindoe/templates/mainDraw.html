@@ -14,14 +14,50 @@
     <div class="btn-group">
         <button type="button" name="button" id="clear" class="btn btn-primary"> Clear </button>
         <button type="button" name="button" id="line" class="btn btn-primary"> Line </button>
-        <button type="button" name="button" class="btn btn-primary m-3" onclick="downloadImage()"> Save Image</button>
+
     </div>
     <div class="form-group row">
-        <label for="example-number-input" class="col-2 col-form-label">Line Thickness</label>
+        <label for="strokewidth" class="col-2 col-form-label">Line Thickness</label>
         <div class="col-1">
             <input class="form-control" type="number" value="1" id="strokewidth">
         </div>
+
     </div>
+
+    <label for="colorp">Choose a Color</label>
+    <input type="color" id="colorp" name="color" value="#0000ff">
+
+    <br>
+
+    <button type="button" name="button" class="btn btn-primary m-1" onclick="downloadImage()"> Save Image</button>
+
+    <div class="row">
+        
+        <div class="col-1">
+            <form action="/save" method="post">
+                <input type="hidden" name="imgurl" value="" id="imgurl"/>
+                <button type="submit" name="submit" class="btn btn-secondary m-1"> Submit</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <form action="/saveToGroup" method="post">
+        <div class="row m-1">
+                <label for="groups">Choose a Group</label>
+
+                <select class="form-control" id="groups" name="groups">
+                    {% for g in myGroups %}
+                    <option>{{ g }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="imgurl2" value="" id="imgurl2"/>
+                <button class="btn m-1" type="submit" name="submit"> Submit to Group</button>
+            </div>
+
+
+    </form>
 </div>
 
 

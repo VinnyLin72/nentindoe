@@ -3,12 +3,16 @@ var draw = board.getContext("2d");
 var wipe = document.getElementById("clear");
 var line = document.getElementById("line");
 var stroke = document.getElementById("strokewidth");
+var maincolor = document.getElementById("colorp");
+var imgurl = document.getElementById("imgurl");
+var imgurl2 = document.getElementById("imgurl2");
+
+
 var mouseDown = false;
 var mode = "draw";
 var thickness = 1;
 
-draw.fillStyle = "#0000ff"; //makes blue
-draw.strokeStyle = "#0000ff";
+
 
 // fxn driving the drawing
 var driver = function(e) {
@@ -16,11 +20,15 @@ var driver = function(e) {
 	if (e.type == "mousedown") {
 	    mouseDown = true;
 	    draw.beginPath();
+        draw.fillStyle = maincolor.value; //makes blue
+        draw.strokeStyle = maincolor.value;
 	    draw.lineTo(e.offsetX, e.offsetY);
 	    draw.stroke;
 	    draw.fill();
 	}
 	else if (e.type == "mousemove" && mouseDown) {
+        draw.fillStyle = maincolor.value; //makes blue
+        draw.strokeStyle = maincolor.value;
 	    draw.lineTo(e.offsetX, e.offsetY);
 	    draw.moveTo(e.offsetX, e.offsetY);
 	    draw.stroke();
@@ -80,12 +88,18 @@ var update = function() {
 stroke.addEventListener("click", update);
 
 function downloadImage() {
-    var element = document.createElement('a');
-    element.setAttribute('href', board.toDataURL('image/png'));
-    element.setAttribute('download', 'chart.png');
-    element.style.display = 'none';
-    document.body.appendChild(element);
+    // var element = document.createElement('a');
+    // element.setAttribute('href', board.toDataURL('image/png'));
+    // element.setAttribute('download', 'chart.png');
+    //
+    // element.style.display = 'none';
+    // document.body.appendChild(element);
+
+    imgurl.value=board.toDataURL('image/png')
+    imgurl2.value=board.toDataURL('image/png')
+    
+
+
     // element.click();
     // document.body.removeChild(element);
 }
-

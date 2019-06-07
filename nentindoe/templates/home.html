@@ -5,7 +5,20 @@
 {% block content %}
 
 <div class = "container-fluid text-center">
+    {% if 'user' in session %}
     <a href ="/mainDraw" class="btn btn-primary btn-lg m-4" role="button"> Make a New Drawing </a>
+
+    {% else %}
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to Nentindoe Draw</h1>
+        <p class="lead">A website where users will be able to log in using their emails to create images, from scratch or drawing on existing images, and post them publicly..</p>
+        <hr class="my-4">
+        <p>Users will be able draw on a canvas using a variety of “tools” and colors, users will be able to import images they wish to edit onto the web app, draw on it, and save or upload the new image. Users will be able to create groups to privately share images amongst friends.</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
+        </p>
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}

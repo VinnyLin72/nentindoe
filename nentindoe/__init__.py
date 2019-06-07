@@ -7,6 +7,12 @@ from urllib.request import Request, urlopen
 
 from util import database as db
 
+from authlib.client import OAuth2Session
+import google.oauth2.credentials
+import googleapiclient.discovery
+
+import google_auth
+
 # manage cookies and user data here
 #instatiate users and pictures table if does not already exist
 
@@ -22,13 +28,28 @@ db.init()
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
 
+app.register_blueprint(google_auth.app)
+
+
+
+
 @app.route('/', methods=['POST','GET'])
 def home():
     if loggedin():
-        print("this is session:")
-        print(session)
+
         return render_template("home.html", user = session['user'])
+
     return render_template("home.html")
+
+
+@app.route('/oauth')
+def oauth():
+    if google_auth.is_logged_in():
+        user_info = google_auth.get_user_info()
+        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
+
+    return 'You are not currently logged in.'
+
 
 @app.route("/register")
 def register():
@@ -36,36 +57,45 @@ def register():
         return redirect(url_for("home"))
     return render_template("register.html")
 
-
 def loggedin():
-    if 'user' in session:
-        return True
-    else:
-        return False
+    return google_auth.is_logged_in()
+
+# @app.route("/login", methods = ['POST','GET'])
+# def login():
+#     if loggedin():
+#         return redirect(url_for("home"))
+#     return render_template("login.html")
 
 @app.route("/login", methods = ['POST','GET'])
 def login():
     if loggedin():
         return redirect(url_for("home"))
-    return render_template("login.html")
+    return redirect('/google/login')
+
+# @app.route('/logout')
+# def logout():
+#     if loggedin():
+#         session.pop('user')
+#     return redirect(url_for("home"))
 
 @app.route('/logout')
 def logout():
-    if loggedin():
+    if 'user' in session:
         session.pop('user')
-    return redirect(url_for("home"))
+    return redirect('/google/logout')
 
 
 @app.route('/mainDraw')
 def mainDraw():
     if loggedin():
-        return render_template("mainDraw.html")
+        my_groups=db.getJoined(session['user'])
+        return render_template("mainDraw.html", myGroups=my_groups)
     return redirect(url_for("home"))
+
 
 #verify login
 @app.route('/auth', methods=['POST','GET'])
 def auth():
-    print(request.method)
     username = request.form['username']
     password = request.form['password']
     if db.verifyUser(username,password):
@@ -107,6 +137,44 @@ def newGroupAuth():
     if loggedin():
         groupname=request.form["groupName"]
         db.createGroup(session['user'],groupname)
+        return redirect(url_for("myGroups"))
+    return redirect(url_for("home"))
+
+@app.route('/viewGroup', methods = ["POST","GET"])
+def viewGroup():
+    if loggedin():
+        groupName=request.form["groupName"]
+        
+        picIds= db.getGroupPicIds(groupName)
+        return render_template("groupPage.html",groupname=groupName, groupPics=picIds)
+    return redirect(url_for("home"))
+
+@app.route('/myDrawings')
+def myDrawings():
+    if loggedin():
+        myPics= db.getPictures(session['user'])
+        imgIds=[]
+        return render_template("myDrawings.html", imglist=myPics)
+    return redirect(url_for("home"))
+
+@app.route('/save', methods=["POST","GET"])
+def save():
+    if loggedin():
+        iurl=request.form["imgurl"]
+
+        db.saveImage(iurl,session['user'])
+        myPics=db.getPictures(session['user'])
+        return redirect(url_for("myDrawings"))
+    return redirect(url_for("home"))
+
+@app.route('/saveToGroup', methods=["POST","GET"])
+def saveToGroup():
+    if loggedin():
+        iurl=request.form["imgurl2"]
+
+        thegroup=request.form['groups']
+        db.saveImage(iurl,session['user'])
+        db.addGroupPic(thegroup,iurl)
         return redirect(url_for("myGroups"))
     return redirect(url_for("home"))
 

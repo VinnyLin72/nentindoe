@@ -2,9 +2,11 @@
 import os, functools
 
 import flask
+from flask import redirect, url_for
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
+from util import database as db
 
 
 # You must configure these 3 values from Google APIs console
@@ -25,7 +27,6 @@ AUTH_STATE_KEY = 'auth_state'
 app = flask.Blueprint('google_auth', __name__)
 
 def is_logged_in():
-    print(flask.session)
     return True if AUTH_TOKEN_KEY in flask.session else False
 
 def build_credentials():
@@ -69,7 +70,6 @@ def login():
                             redirect_uri=AUTH_REDIRECT_URI)
 
     uri, state = session.authorization_url(AUTHORIZATION_URL)
-    print(flask.session)
 
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
@@ -81,9 +81,11 @@ def login():
 def google_auth_redirect():
     req_state = flask.request.args.get('state', default=None, type=None)
 
+    if AUTH_STATE_KEY not in flask.session:
+            return redirect(url_for('logout'))
     if req_state != flask.session[AUTH_STATE_KEY]:
         response = flask.make_response('Invalid state parameter', 401)
-        return response
+        return redirect(url_for('logout'))
 
     session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                             scope=AUTHORIZATION_SCOPE,
@@ -95,6 +97,8 @@ def google_auth_redirect():
                         authorization_response=flask.request.url)
 
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
+    flask.session['user'] = get_user_info()['given_name']
+    db.registerUser(flask.session['user'])
 
     return flask.redirect(BASE_URI, code=302)
 
