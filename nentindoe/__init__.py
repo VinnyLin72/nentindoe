@@ -144,9 +144,12 @@ def newGroupAuth():
 def viewGroup():
     if loggedin():
         groupName=request.form["groupName"]
-        
+
         picIds= db.getGroupPicIds(groupName)
-        return render_template("groupPage.html",groupname=groupName, groupPics=picIds)
+        username = session['user']
+        members = getMembers(groupName)
+        admin = username in getAdmins(groupName)
+        return render_template("groupPage.html",groupname=groupName, groupPics=picIds, groupMembers=members, isAdmin=admin)
     return redirect(url_for("home"))
 
 @app.route('/myDrawings')
