@@ -87,7 +87,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    if loggedin():
+    if 'user' in session:
         session.pop('user')
     return redirect('/google/logout')
 
