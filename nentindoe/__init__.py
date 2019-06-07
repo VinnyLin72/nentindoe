@@ -7,6 +7,12 @@ from urllib.request import Request, urlopen
 
 from util import database as db
 
+from authlib.client import OAuth2Session
+import google.oauth2.credentials
+import googleapiclient.discovery
+
+import google_auth
+
 # manage cookies and user data here
 #instatiate users and pictures table if does not already exist
 
@@ -22,6 +28,11 @@ db.init()
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
 
+app.register_blueprint(google_auth.app)
+
+
+
+
 @app.route('/', methods=['POST','GET'])
 def home():
     if loggedin():
@@ -30,6 +41,16 @@ def home():
         return render_template("home.html", user = session['user'])
     return render_template("home.html")
 
+
+@app.route('/oauth')
+def oauth():
+    if google_auth.is_logged_in():
+        user_info = google_auth.get_user_info()
+        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
+
+    return 'You are not currently logged in.'
+
+
 @app.route("/register")
 def register():
     if loggedin():
@@ -37,23 +58,38 @@ def register():
     return render_template("register.html")
 
 
+# def loggedin():
+#     if 'user' in session:
+#         return True
+#     else:
+#         return False
+
 def loggedin():
-    if 'user' in session:
-        return True
-    else:
-        return False
+    return google_auth.is_logged_in()
+
+# @app.route("/login", methods = ['POST','GET'])
+# def login():
+#     if loggedin():
+#         return redirect(url_for("home"))
+#     return render_template("login.html")
 
 @app.route("/login", methods = ['POST','GET'])
 def login():
     if loggedin():
         return redirect(url_for("home"))
-    return render_template("login.html")
+    return redirect('/google/login')
+
+# @app.route('/logout')
+# def logout():
+#     if loggedin():
+#         session.pop('user')
+#     return redirect(url_for("home"))
 
 @app.route('/logout')
 def logout():
     if loggedin():
         session.pop('user')
-    return redirect(url_for("home"))
+    return redirect('/google/logout')
 
 
 @app.route('/mainDraw')
@@ -109,6 +145,17 @@ def newGroupAuth():
         db.createGroup(session['user'],groupname)
         return redirect(url_for("myGroups"))
     return redirect(url_for("home"))
+
+@app.route('/viewGroup', methods = ["POST","GET"])
+def viewGroup():
+    if loggedin():
+        groupName=request.form["groupName"]
+        print("groupname")
+        print(groupName)
+        picIds= db.getGroupPicIds(groupName)
+        return render_template("groupPage.html",groupPics=picIds)
+    return redirect(url_for("home"))
+
 
 
 
