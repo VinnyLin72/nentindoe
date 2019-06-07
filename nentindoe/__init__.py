@@ -142,10 +142,6 @@ def newGroupAuth():
 def viewGroup():
     if loggedin():
         groupName=request.form["groupName"]
-<<<<<<< HEAD
-
-=======
->>>>>>> 566001dbfcfc2ca0eb46be886ccf1d03127bc317
         picIds= db.getGroupPicIds(groupName)
         username = session['user']
         members = getMembers(groupName)
