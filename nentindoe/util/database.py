@@ -86,6 +86,21 @@ def verifyUser(username, password):
     db.close()
     return False
 
+def banUser(username):
+    '''
+    Bans a user
+    '''
+    if username not in getUsers(): #user dne
+        return False
+    else:
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'UPDATE users SET banned = 1 WHERE username = (?);'
+        c.execute(command,(member,))
+        db.commit()
+        db.close()
+        return True
+
 #==========================================================
 #Users table functions
 def getPictures(username):
