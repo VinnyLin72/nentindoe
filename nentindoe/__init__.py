@@ -36,9 +36,7 @@ app.register_blueprint(google_auth.app)
 @app.route('/', methods=['POST','GET'])
 def home():
     if loggedin():
-
         return render_template("home.html", user = session['user'])
-
     return render_template("home.html")
 
 
@@ -144,7 +142,6 @@ def newGroupAuth():
 def viewGroup():
     if loggedin():
         groupName=request.form["groupName"]
-        
         picIds= db.getGroupPicIds(groupName)
         return render_template("groupPage.html",groupname=groupName, groupPics=picIds)
     return redirect(url_for("home"))
@@ -161,7 +158,6 @@ def myDrawings():
 def save():
     if loggedin():
         iurl=request.form["imgurl"]
-
         db.saveImage(iurl,session['user'])
         myPics=db.getPictures(session['user'])
         return redirect(url_for("myDrawings"))
@@ -171,7 +167,6 @@ def save():
 def saveToGroup():
     if loggedin():
         iurl=request.form["imgurl2"]
-
         thegroup=request.form['groups']
         db.saveImage(iurl,session['user'])
         db.addGroupPic(thegroup,iurl)
