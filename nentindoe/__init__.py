@@ -98,6 +98,7 @@ def mainDraw():
         return render_template("mainDraw.html")
     return redirect(url_for("home"))
 
+
 #verify login
 @app.route('/auth', methods=['POST','GET'])
 def auth():
@@ -155,6 +156,27 @@ def viewGroup():
         picIds= db.getGroupPicIds(groupName)
         return render_template("groupPage.html",groupPics=picIds)
     return redirect(url_for("home"))
+
+@app.route('/myDrawings')
+def myDrawings():
+    if loggedin():
+        myPics= db.getPictures(session['user'])
+        imgIds=[]
+        return render_template("myDrawings.html", imglist=myPics)
+    return redirect(url_for("home"))
+
+@app.route('/save', methods=["POST","GET"])
+def save():
+    if loggedin():
+        iurl=request.form["imgurl"]
+        print(session['user'])
+        db.saveImage(iurl,session['user'])
+        myPics=db.getPictures(session['user'])
+        print(myPics)
+        return redirect(url_for("myDrawings"))
+    return redirect(url_for("home"))
+
+
 
 
 

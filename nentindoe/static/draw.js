@@ -4,6 +4,8 @@ var wipe = document.getElementById("clear");
 var line = document.getElementById("line");
 var stroke = document.getElementById("strokewidth");
 var maincolor = document.getElementById("colorp");
+var imgurl = document.getElementById("imgurl");
+
 
 var mouseDown = false;
 var mode = "draw";
@@ -85,11 +87,15 @@ var update = function() {
 stroke.addEventListener("click", update);
 
 function downloadImage() {
-    var element = document.createElement('a');
-    element.setAttribute('href', board.toDataURL('image/png'));
-    element.setAttribute('download', 'chart.png');
-    element.style.display = 'none';
-    document.body.appendChild(element);
+    // var element = document.createElement('a');
+    // element.setAttribute('href', board.toDataURL('image/png'));
+    // element.setAttribute('download', 'chart.png');
+    //
+    // element.style.display = 'none';
+    // document.body.appendChild(element);
+
+    imgurl.value=board.toDataURL('image/png')
+
     // element.click();
     // document.body.removeChild(element);
 }

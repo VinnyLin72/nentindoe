@@ -5,11 +5,11 @@ def init():
     c = db.cursor()
     command = "CREATE TABLE IF NOT EXISTS users (username TEXT UNIQUE, password TEXT, banned INTEGER);"
     c.execute(command)
-    command = 'CREATE TABLE IF NOT EXISTS pictures (picId INTEGER PRIMARY KEY, picName TEXT, username TEXT, caption TEXT, private INTEGER);'
+    command = 'CREATE TABLE IF NOT EXISTS pictures (picId TEXT, picName TEXT, username TEXT, caption TEXT);'
     c.execute(command)
     command = 'CREATE TABLE IF NOT EXISTS allGroups (groupName TEXT UNIQUE);'
     c.execute(command)
-    command = 'CREATE TABLE IF NOT EXISTS groupPics (picId INTEGER, groupName TEXT, banned INTEGER);'
+    command = 'CREATE TABLE IF NOT EXISTS groupPics (picId TEXT, groupName TEXT, banned INTEGER);'
     c.execute(command)
     command = 'CREATE TABLE IF NOT EXISTS groupMembership (username TEXT, groupName TEXT, admin INTEGER, request INTEGER, banned INTEGER);'
     c.execute(command)
@@ -47,7 +47,7 @@ def findUser(username):
     '''
     return username in getUsers()
 
-def registerUser(username, password):
+def registerUser(username):
     '''
     ADDS user TO USERS table
     '''
@@ -60,7 +60,7 @@ def registerUser(username, password):
     # username not in database -- continue to add
     else:
         command = 'INSERT INTO "users" VALUES (?, ?, ?);'
-        c.execute(command, (username, password, 0))
+        c.execute(command, (username, "hello", 0))
         db.commit()
         db.close()
         return True
@@ -90,11 +90,11 @@ def verifyUser(username, password):
 #Users table functions
 def getPictures(username):
     '''
-    RETURNS A array CONTAINING ALL CURRENT picture names for the user
+    RETURNS A array CONTAINING ALL CURRENT picture ids for the user
     '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
-    command = 'SELECT picName FROM pictures WHERE username = "{0}";'.format(username)
+    command = 'SELECT picId FROM pictures WHERE username = "{0}";'.format(username)
     c.execute(command)
     selectedVal = c.fetchall()
     ans = [x[0] for x in selectedVal]
@@ -136,26 +136,28 @@ def getImageId(username, picName):
         db.close()
         return selectedVal[0][0]
 
-def saveImage(username, picName, caption, private):
+def saveImage(picid,username):
     '''
     ADDS picture TO pictures table, returns the image id
     '''
     if username not in getUsers(): #the user does not exist
         return -1
-    if picName in getPictures(username): #the picture already exists
-        return 0
+    # if picName in getPictures(username): #the picture already exists
+    #     return 0
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
     # username not in database -- continue to add
-    if private == True:
-        private = 1
-    else:
-        private = 0
-    command = 'INSERT INTO pictures VALUES(?, ?, ?, ?, ?);'
-    c.execute(command, (None, picName, username, caption, private))
+    # if private == True:
+    #     private = 1
+    # else:
+    #     private = 0
+    command = 'INSERT INTO pictures VALUES(?, ?, ?, ?);'
+    print(picid)
+    print(username)
+    c.execute(command, (picid, 'tset', username, 'test'))
     db.commit()
     db.close()
-    return getImageId(username, picName) #returns the pic id
+    return  #returns the pic id
 
 def removeImage(username, picName):
     '''

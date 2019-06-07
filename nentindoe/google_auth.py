@@ -5,6 +5,7 @@ import flask
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
+from util import database as db
 
 
 # You must configure these 3 values from Google APIs console
@@ -96,6 +97,7 @@ def google_auth_redirect():
 
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
     flask.session['user'] = get_user_info()['given_name']
+    db.registerUser(flask.session['user'])
 
     return flask.redirect(BASE_URI, code=302)
 
@@ -104,6 +106,6 @@ def google_auth_redirect():
 def logout():
     flask.session.pop(AUTH_TOKEN_KEY, None)
     flask.session.pop(AUTH_STATE_KEY, None)
-    
+
 
     return flask.redirect(BASE_URI, code=302)
