@@ -1,4 +1,4 @@
-{% extends "base.html"}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -10,10 +10,34 @@
 
 <div class="container-fluid">
     <div class="row">
-        {% for p in groupPics}
+        <!-- <div class="col-sm-10">
+            {% for p in groupPics %}
+            <div class="col-sm-4" style="padding-top: 10px;">
+                <div class="card" style="width: 24rem;">
+                    <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src="{{g}}" alt="No images in this group">
+                    <div class="card-body">
+                        <h5 class="card-title">{{}}</h5>
+                        <p class="card-text">
+                            By:
+                        </p>
+                        <form action="/viewGroup" method="post">
+                            <button class="btn btn-primary" type="submit" name="groupName" value="{{ g }}"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-sm-2">
+            <a href="/newGroup" class="btn btn-primary"> Create a New Group </a>
+        </div> -->
+
+        {% for p in groupPics %}
         <div class="col-4">
             <img src={{p}} alt="Image Not Found">
         </div>
         {% endfor %}
     </div>
 </div>
+
+{% endblock %}
