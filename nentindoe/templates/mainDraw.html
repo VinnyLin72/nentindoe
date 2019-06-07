@@ -29,10 +29,34 @@
 
     <br>
 
-    <form action="/save" method="post">
-        <button type="button" name="button" class="btn btn-primary m-1" onclick="downloadImage()"> Save Image</button>
-        <input type="hidden" name="imgurl" value="" id="imgurl"/>
-        <button type="submit" name="submit" class="btn btn-secondary m-1"> Submit</button>
+    <button type="button" name="button" class="btn btn-primary m-1" onclick="downloadImage()"> Save Image</button>
+
+    <div class="row">
+        
+        <div class="col-1">
+            <form action="/save" method="post">
+                <input type="hidden" name="imgurl" value="" id="imgurl"/>
+                <button type="submit" name="submit" class="btn btn-secondary m-1"> Submit</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <form action="/saveToGroup" method="post">
+        <div class="row m-1">
+                <label for="groups">Choose a Group</label>
+
+                <select class="form-control" id="groups" name="groups">
+                    {% for g in myGroups %}
+                    <option>{{ g }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="imgurl2" value="" id="imgurl2"/>
+                <button class="btn m-1" type="submit" name="submit"> Submit to Group</button>
+            </div>
+
+
     </form>
 </div>
 

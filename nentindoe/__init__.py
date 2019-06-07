@@ -36,9 +36,9 @@ app.register_blueprint(google_auth.app)
 @app.route('/', methods=['POST','GET'])
 def home():
     if loggedin():
-        print("this is session:")
-        print(session)
+
         return render_template("home.html", user = session['user'])
+
     return render_template("home.html")
 
 
@@ -56,13 +56,6 @@ def register():
     if loggedin():
         return redirect(url_for("home"))
     return render_template("register.html")
-
-
-# def loggedin():
-#     if 'user' in session:
-#         return True
-#     else:
-#         return False
 
 def loggedin():
     return google_auth.is_logged_in()
@@ -95,14 +88,14 @@ def logout():
 @app.route('/mainDraw')
 def mainDraw():
     if loggedin():
-        return render_template("mainDraw.html")
+        my_groups=db.getJoined(session['user'])
+        return render_template("mainDraw.html", myGroups=my_groups)
     return redirect(url_for("home"))
 
 
 #verify login
 @app.route('/auth', methods=['POST','GET'])
 def auth():
-    print(request.method)
     username = request.form['username']
     password = request.form['password']
     if db.verifyUser(username,password):
@@ -151,10 +144,9 @@ def newGroupAuth():
 def viewGroup():
     if loggedin():
         groupName=request.form["groupName"]
-        print("groupname")
-        print(groupName)
+        
         picIds= db.getGroupPicIds(groupName)
-        return render_template("groupPage.html",groupPics=picIds)
+        return render_template("groupPage.html",groupname=groupName, groupPics=picIds)
     return redirect(url_for("home"))
 
 @app.route('/myDrawings')
@@ -169,15 +161,22 @@ def myDrawings():
 def save():
     if loggedin():
         iurl=request.form["imgurl"]
-        print(session['user'])
+
         db.saveImage(iurl,session['user'])
         myPics=db.getPictures(session['user'])
-        print(myPics)
         return redirect(url_for("myDrawings"))
     return redirect(url_for("home"))
 
+@app.route('/saveToGroup', methods=["POST","GET"])
+def saveToGroup():
+    if loggedin():
+        iurl=request.form["imgurl2"]
 
-
+        thegroup=request.form['groups']
+        db.saveImage(iurl,session['user'])
+        db.addGroupPic(thegroup,iurl)
+        return redirect(url_for("myGroups"))
+    return redirect(url_for("home"))
 
 
 

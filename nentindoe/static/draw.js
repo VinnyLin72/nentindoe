@@ -5,6 +5,7 @@ var line = document.getElementById("line");
 var stroke = document.getElementById("strokewidth");
 var maincolor = document.getElementById("colorp");
 var imgurl = document.getElementById("imgurl");
+var imgurl2 = document.getElementById("imgurl2");
 
 
 var mouseDown = false;
@@ -95,6 +96,9 @@ function downloadImage() {
     // document.body.appendChild(element);
 
     imgurl.value=board.toDataURL('image/png')
+    imgurl2.value=board.toDataURL('image/png')
+    
+
 
     // element.click();
     // document.body.removeChild(element);

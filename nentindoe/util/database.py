@@ -35,7 +35,7 @@ def getUsers():
     '''
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
-    command = 'SELECT username, password FROM USERS;'
+    command = 'SELECT username, password FROM users;'
     c.execute(command)
     selectedVal = c.fetchall()
     db.close()
@@ -114,7 +114,6 @@ def getImage(username, picName):
         command = 'SELECT picId, caption FROM pictures WHERE username = ? AND picName = ?;'
         c.execute(command,(username,picName,))
         selectedVal = c.fetchall()
-        print(selectedVal)
         ans = {}
         for x in selectedVal:
             ans[picName + "_" + str(x[0]) + ".png"] = x[1]
@@ -152,8 +151,7 @@ def saveImage(picid,username):
     # else:
     #     private = 0
     command = 'INSERT INTO pictures VALUES(?, ?, ?, ?);'
-    print(picid)
-    print(username)
+
     c.execute(command, (picid, 'tset', username, 'test'))
     db.commit()
     db.close()
@@ -492,15 +490,11 @@ def getGroupPicIds(groupName):
     db.close()
     return ans
 
-def addGroupPic(username, picName, groupName):
-    imgId = getImageId(username, picName)
-    if imgId in getGroupPicIds(groupName):
-        return False
-    else:
-        db = sqlite3.connect("data/draw.db")
-        c = db.cursor()
-        command = 'INSERT INTO groupPics VALUES(?, ?, ?);'
-        c.execute(command, (imgId, groupName, 0))
-        db.commit()
-        db.close()
-        return True
+def addGroupPic(groupName, picid):
+    db = sqlite3.connect("data/draw.db")
+    c = db.cursor()
+    command = 'INSERT INTO groupPics VALUES(?, ?, ?);'
+    c.execute(command, (picid, groupName, 0))
+    db.commit()
+    db.close()
+    return True

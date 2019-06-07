@@ -12,21 +12,22 @@
 <div class="container-fluid">
     <div class="block-center">
         <div class="row">
-                {% for img in imglist %}
-                <div class="col-sm-4" style="padding-top: 10px;">
-                    <div class="card" style="width: 24rem;">
-                        <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src={{ img }} alt="No image">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ title }}</h5>
-                            <p class="card-text">            
-                            </p>
-                        </div>
+            {% for img in imglist %}
+            <div class="col-3" style="padding-top: 10px;">
+                <div class="card" style="width: 24rem;">
+                    <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src={{ img }} alt="No image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ title }}</h5>
+                        <p class="card-text">
+                        </p>
                     </div>
                 </div>
-                {% endfor %}
             </div>
-
+            {% endfor %}
         </div>
     </div>
 </div>
+
+
+
 {% endblock %}
