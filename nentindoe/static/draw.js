@@ -2,6 +2,8 @@ var board = document.getElementById("slate");
 var draw = board.getContext("2d");
 var wipe = document.getElementById("clear");
 var line = document.getElementById("line");
+var circle = document.getElementById("circle");
+var box = document.getElementById("box");
 var stroke = document.getElementById("strokewidth");
 var maincolor = document.getElementById("colorp");
 var imgurl = document.getElementById("imgurl");
@@ -49,6 +51,28 @@ var driver = function(e) {
 	    console.log("closing path");
 	}
     }
+    else if (mode == "circle") {
+	if (e.type == "mousedown") {
+	    draw.arc(e.offsetX, e.offsetY,thickness, 0, 2 * Math.PI);
+	}
+    }
+    else if (mode == "box") {
+	var startx = 0;
+	var starty = 0;
+	var endx = 0;
+	var endy = 0;
+	if (e.type == "mousedown") {
+	    startx = e.offsetX;
+	    starty = e.offsetY;
+	}
+	if (e.type == "mouseup") {
+	    endx = e.offsetX;
+	    endy = e.offsetY;
+	    draw.rect(startx, starty, endx, endy);
+	    draw.stroke();
+	    draw.fill();
+	}
+    }	    
 }
 
 board.addEventListener("mousedown", driver);
@@ -76,6 +100,31 @@ var zip = function() {
 
 line.addEventListener("mousedown", zip);
 
+//circle fxn
+var round = function() {
+    if (mode != "circle") {
+	mode = "circle";
+	draw.beginPath();
+    }
+    else {
+	mode = "draw";
+    }
+}
+
+circle.addEventListener("mousedown", round);
+
+//box fxn
+var square = function() {
+    if (mode != "box") {
+	mode = "box";
+	draw.beginPath();
+    }
+    else {
+	mode = "draw";
+    }
+}
+
+box.addEventListener("mousedown", square);
 
 //update stroke length
 var update = function() {
