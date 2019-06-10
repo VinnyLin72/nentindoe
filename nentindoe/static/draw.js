@@ -9,12 +9,15 @@ var maincolor = document.getElementById("colorp");
 var imgurl = document.getElementById("imgurl");
 var imgurl2 = document.getElementById("imgurl2");
 
+//for box methods
+var startx = 0;
+var starty = 0;
+var endx = 0;
+var endy = 0;
 
 var mouseDown = false;
 var mode = "draw";
 var thickness = 1;
-
-
 
 // fxn driving the drawing
 var driver = function(e) {
@@ -22,15 +25,15 @@ var driver = function(e) {
 	if (e.type == "mousedown") {
 	    mouseDown = true;
 	    draw.beginPath();
-        draw.fillStyle = maincolor.value; //makes blue
-        draw.strokeStyle = maincolor.value;
+            draw.fillStyle = maincolor.value; //makes blue
+            draw.strokeStyle = maincolor.value;
 	    draw.lineTo(e.offsetX, e.offsetY);
 	    draw.stroke;
 	    draw.fill();
 	}
 	else if (e.type == "mousemove" && mouseDown) {
-        draw.fillStyle = maincolor.value; //makes blue
-        draw.strokeStyle = maincolor.value;
+            draw.fillStyle = maincolor.value; //makes blue
+            draw.strokeStyle = maincolor.value;
 	    draw.lineTo(e.offsetX, e.offsetY);
 	    draw.moveTo(e.offsetX, e.offsetY);
 	    draw.stroke();
@@ -53,19 +56,19 @@ var driver = function(e) {
     }
     else if (mode == "circle") {
 	if (e.type == "mousedown") {
-	    draw.arc(e.offsetX, e.offsetY,thickness, 0, 2 * Math.PI);
+	    draw.fillStyle = maincolor.value; //makes blue
+            draw.strokeStyle = maincolor.value;
+	    draw.arc(e.offsetX, e.offsetY, thickness, 0, 2 * Math.PI);
 	}
     }
-    else if (mode == "box") {
-	var startx = 0;
-	var starty = 0;
-	var endx = 0;
-	var endy = 0;
+    else {
 	if (e.type == "mousedown") {
 	    startx = e.offsetX;
 	    starty = e.offsetY;
 	}
 	if (e.type == "mouseup") {
+            draw.fillStyle = maincolor.value; //makes blue
+            draw.strokeStyle = maincolor.value;	    
 	    endx = e.offsetX;
 	    endy = e.offsetY;
 	    draw.rect(startx, starty, endx, endy);
