@@ -17,8 +17,8 @@ A website where users will be able to log in using their emails to create images
 $ python3 -m venv <name>
 ```
 3. Activate the virtual environment by typing ```$ . <name>/bin/activate``` in the terminal and make sure it is running python3 by typing ```(venv)$ python --version``` in the terminal.
-4. Install all necessary requirements to the virtual environment by typing ```pip install -r requirements.txt``` in the terminal.
-5. Clone this repository. If you have already cloned this repository, skip this step. To clone this repo, open a terminal session and navigate to the directory you want for this repository to located in. Then clone using SSH by typing ```(venv)$ git clone git@github.com:VinnyLin72/nentindoe.git``` or clone using HTTPS by typing ```(venv)$ git clone https://github.com/VinnyLin72/nentindoe.git``` in the terminal.
+4. Clone this repository. If you have already cloned this repository, skip this step. To clone this repo, open a terminal session and navigate to the directory you want for this repository to located in. Then clone using SSH by typing ```(venv)$ git clone git@github.com:VinnyLin72/nentindoe.git``` or clone using HTTPS by typing ```(venv)$ git clone https://github.com/VinnyLin72/nentindoe.git``` in the terminal.
+5. Install all necessary requirements to the virtual environment by typing ```pip install -r requirements.txt``` in the terminal.
 6. Navigate to our repository by typing ```$ cd nentindoe/``` in the terminal.
 7. Run the python file by typing ```(venv)$ python <path>/__init__.py``` in the terminal. This should appear in the terminal after running the python file.   
 ```
