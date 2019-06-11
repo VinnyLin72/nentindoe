@@ -161,7 +161,7 @@ def myDrawings():
 def save():
     if loggedin():
         iurl=request.form["imgurl"]
-        db.saveImage(iurl,session['user'])
+        db.saveImage(iurl,session['user'],0)
         myPics=db.getPictures(session['user'])
         return redirect(url_for("myDrawings"))
     return redirect(url_for("home"))
@@ -171,11 +171,20 @@ def saveToGroup():
     if loggedin():
         iurl=request.form["imgurl2"]
         thegroup=request.form['groups']
-        db.saveImage(iurl,session['user'])
-        db.addGroupPic(thegroup,iurl)
-        return redirect(url_for("myGroups"))
+        if thegroup!="publicGal":
+            db.saveImage(iurl,session['user'],1)
+            db.addGroupPic(thegroup,iurl)
+            return redirect(url_for("myGroups"))
+        else:
+            db.saveImage(iurl,session['user'],0)
+            return redirect(url_for("publicGal"))
     return redirect(url_for("home"))
 
+@app.route('/publicGal')
+def publicGal():
+    myPics= db.getPublicPics()
+    return render_template("publicGal.html", imglist=myPics)
+    return redirect(url_for("home"))
 
 
 

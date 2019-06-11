@@ -1,11 +1,12 @@
 import sqlite3   # enable control of an sqlite database
+import random
 
 def init():
     db = sqlite3.connect("data/draw.db")
     c = db.cursor()
     command = "CREATE TABLE IF NOT EXISTS users (username TEXT UNIQUE, password TEXT, banned INTEGER);"
     c.execute(command)
-    command = 'CREATE TABLE IF NOT EXISTS pictures (picId TEXT, picName TEXT, username TEXT, caption TEXT);'
+    command = 'CREATE TABLE IF NOT EXISTS pictures (picId TEXT, picName TEXT, username TEXT, caption TEXT, private INTEGER);'
     c.execute(command)
     command = 'CREATE TABLE IF NOT EXISTS allGroups (groupName TEXT UNIQUE);'
     c.execute(command)
@@ -116,6 +117,22 @@ def getPictures(username):
     db.close()
     return ans
 
+def getPublicPics():
+    '''
+    RETURNS A array CONTAINING ALL CURRENT picture ids for the user
+    '''
+    ans=[]
+    for u in getUsers():
+        db = sqlite3.connect("data/draw.db")
+        c = db.cursor()
+        command = 'SELECT picId FROM pictures WHERE username = "{0}" AND private = 0;'.format(u)
+        c.execute(command)
+        selectedVal = c.fetchall()
+        ans += [x[0] for x in selectedVal]
+    db.close()
+    random.shuffle(ans)
+    return ans
+
 def getImage(username, picName):
     '''
     Returns a dictionary of the image file name as the key and the caption as the value
@@ -150,7 +167,7 @@ def getImageId(username, picName):
         db.close()
         return selectedVal[0][0]
 
-def saveImage(picid,username):
+def saveImage(picid,username,private):
     '''
     ADDS picture TO pictures table, returns the image id
     '''
@@ -165,9 +182,9 @@ def saveImage(picid,username):
     #     private = 1
     # else:
     #     private = 0
-    command = 'INSERT INTO pictures VALUES(?, ?, ?, ?);'
+    command = 'INSERT INTO pictures VALUES(?, ?, ?, ?, ?);'
 
-    c.execute(command, (picid, 'tset', username, 'test'))
+    c.execute(command, (picid, 'tset', username, 'test',private))
     db.commit()
     db.close()
     return  #returns the pic id

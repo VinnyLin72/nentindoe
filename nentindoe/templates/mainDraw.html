@@ -4,9 +4,30 @@
 
 {% block content %}
 
-<div>
-    <canvas height="600" width="900" id="slate" style="border: 1px solid blue">
-    </canvas>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8 m-1">
+            <canvas height="600" width="900" id="slate" style="border: 1px solid blue">
+            </canvas>
+        </div>
+
+        <div class="col">
+            <div class="float-center mt-5">
+                <div class="input-group" id="import">
+                    <label class="custom-file-label" for="import">Upload an image (Modify for 600x900)</label>
+                    <!-- <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                    </div> -->
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="upImg" name="button"></input>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
 </div>
 
 
@@ -41,6 +62,8 @@
                 <button type="submit" name="submit" class="btn btn-secondary m-1"> Submit</button>
             </form>
         </div>
+
+        </div>
     </div>
 
 
@@ -58,8 +81,6 @@
                 <input type="hidden" name="imgurl2" value="" id="imgurl2"/>
                 <button class="btn m-1" type="submit" name="submit"> Submit to Group</button>
             </div>
-
-
     </form>
 </div>
 
