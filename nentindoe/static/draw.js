@@ -32,7 +32,7 @@ var driver = function(e) {
 	    draw.fill();
 	}
 	else if (e.type == "mousemove" && mouseDown) {
-            draw.fillStyle = maincolor.value; //makes blue
+            draw.fillStyle = maincolor.value; //makes color
             draw.strokeStyle = maincolor.value;
 	    draw.lineTo(e.offsetX, e.offsetY);
 	    draw.moveTo(e.offsetX, e.offsetY);
@@ -56,24 +56,31 @@ var driver = function(e) {
     }
     else if (mode == "circle") {
 	if (e.type == "mousedown") {
-	    draw.fillStyle = maincolor.value; //makes blue
+	    draw.fillStyle = maincolor.value; //makes color
             draw.strokeStyle = maincolor.value;
 	    draw.arc(e.offsetX, e.offsetY, thickness, 0, 2 * Math.PI);
+	    draw.stroke();
+	    draw.fill();
+	    draw.closePath();
+	    draw.beginPath();
 	}
     }
     else {
 	if (e.type == "mousedown") {
+	    console.log("newstart");
 	    startx = e.offsetX;
 	    starty = e.offsetY;
 	}
 	if (e.type == "mouseup") {
-            draw.fillStyle = maincolor.value; //makes blue
+            draw.fillStyle = maincolor.value; //makes color
             draw.strokeStyle = maincolor.value;
-	    endx = e.offsetX;
-	    endy = e.offsetY;
+	    endx = e.offsetX - startx;
+	    endy = e.offsetY - starty;
 	    draw.rect(startx, starty, endx, endy);
 	    draw.stroke();
 	    draw.fill();
+	    draw.closePath();
+	    draw.beginPath();
 	}
     }
 }
