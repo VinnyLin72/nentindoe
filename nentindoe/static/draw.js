@@ -68,14 +68,14 @@ var driver = function(e) {
 	}
 	if (e.type == "mouseup") {
             draw.fillStyle = maincolor.value; //makes blue
-            draw.strokeStyle = maincolor.value;	    
+            draw.strokeStyle = maincolor.value;
 	    endx = e.offsetX;
 	    endy = e.offsetY;
 	    draw.rect(startx, starty, endx, endy);
 	    draw.stroke();
 	    draw.fill();
 	}
-    }	    
+    }
 }
 
 board.addEventListener("mousedown", driver);
@@ -149,9 +149,19 @@ function downloadImage() {
 
     imgurl.value=board.toDataURL('image/png')
     imgurl2.value=board.toDataURL('image/png')
-    
-
-
     // element.click();
     // document.body.removeChild(element);
+}
+
+document.getElementById('upImg').onchange = function(e) {
+  var img = new Image();
+  img.onload = fillCan;
+  img.onerror = failed;
+  img.src = URL.createObjectURL(this.files[0]);
+};
+function fillCan() {
+  draw.drawImage(this, 0,0);
+}
+function failed() {
+  console.error("The provided file couldn't be loaded as an Image media");
 }
