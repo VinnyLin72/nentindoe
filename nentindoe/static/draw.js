@@ -55,6 +55,7 @@ var driver = function(e) {
     }
     else if (mode == "line") {
         if (e.type == "mousedown") {
+	    draw.strokeStyle = maincolor.value;
             draw.lineWidth = thickness;
             draw.lineTo(e.offsetX, e.offsetY);
             draw.moveTo(e.offsetX, e.offsetY);
