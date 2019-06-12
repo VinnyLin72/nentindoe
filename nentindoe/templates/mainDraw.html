@@ -15,32 +15,36 @@
             <div class="float-center mt-5">
                 <div class="input-group" id="import">
                     <label class="custom-file-label" for="import">Upload an image (Modify for 600x900)</label>
-                    <!-- <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-                    </div> -->
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="upImg" name="button"></input>
-                    </div>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="upImg" name="button"></input>
                 </div>
             </div>
-
-
         </div>
-    </div>
 
+
+    </div>
 </div>
 
 
 <div class="container-fluid">
-    <div class="btn-group">
-        <button type="button" name="button" id="clear" class="btn btn-primary"> Clear </button>
-        <button type="button" name="button" id="line" class="btn btn-primary"> Line </button>
-	<button type="button" name="button" id="circle" class="btn btn-primary"> Circle </button>
-	<button type="button" name="button" id="box" class="btn btn-primary"> Box </button>
-
+    <div class="row">
+        <div class="col-5">
+            <div class="btn-group">
+                <button type="button" name="button" id="clear" class="btn btn-primary"> Clear </button>
+                <button type="button" name="button" id="line" class="btn btn-primary"> Line </button>
+                <button type="button" name="button" id="circle" class="btn btn-primary"> Circle </button>
+                <button type="button" name="button" id="box" class="btn btn-primary"> Box </button>
+            </div>
+        </div>
+        <div class="col-2">
+            <h5>Current Mode: <span class="label label-default" id="curMode"></span></h5>
+        </div>
     </div>
-    <div class="form-group row">
-        <label for="strokewidth" class="col-2 col-form-label">Line Thickness</label>
+
+
+    <div class="form-group row mt-2">
+        <label for="strokewidth" class="col-form-label ml-3">Line Thickness</label>
         <div class="col-1">
             <input class="form-control" type="number" value="1" id="strokewidth">
         </div>
@@ -55,23 +59,18 @@
     <button type="button" name="button" class="btn btn-primary m-1" onclick="downloadImage()"> Save Image</button>
 
     <div class="row">
-
         <div class="col-1">
             <form action="/save" method="post">
                 <input type="hidden" name="imgurl" value="" id="imgurl"/>
                 <button type="submit" name="submit" class="btn btn-secondary m-1"> Submit</button>
             </form>
         </div>
-
-        </div>
     </div>
 
-
-
     <form action="/saveToGroup" method="post">
-        <div class="row m-1">
+        <div class="row">
+            <div class="col-3">
                 <label for="groups">Choose a Group</label>
-
                 <select class="form-control" id="groups" name="groups">
                     <option value="publicGal">Public Gallery</option>
                     {% for g in myGroups %}
@@ -81,6 +80,7 @@
                 <input type="hidden" name="imgurl2" value="" id="imgurl2"/>
                 <button class="btn m-1" type="submit" name="submit"> Submit to Group</button>
             </div>
+        </div>
     </form>
 </div>
 
