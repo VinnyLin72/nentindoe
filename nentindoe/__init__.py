@@ -144,8 +144,8 @@ def viewGroup():
         groupName=request.form["groupName"]
         picIds= db.getGroupPicIds(groupName)
         username = session['user']
-        members = getMembers(groupName)
-        admin = username in getAdmins(groupName)
+        members = db.getMembers(groupName)
+        admin = username in db.getAdmins(groupName)
         return render_template("groupPage.html",groupname=groupName, groupPics=picIds, groupMembers=members, isAdmin=admin)
     return redirect(url_for("home"))
 
