@@ -4,6 +4,9 @@ x1# Nentindoe
 ## Description
 A website where users will be able to log in using their emails to create images, from scratch or drawing on existing images, and post them publicly. Users will be able draw on a canvas using a variety of “tools” and colors, users will be able to import images they wish to edit onto the web app, draw on it, and save or upload the new image. Users will be able to create groups to privately share images amongst friends.
 
+## Video Demo
+https://youtu.be/4k1GX1un0xc
+
 ## Dependencies
 - Flask==1.0.2
   Framework
