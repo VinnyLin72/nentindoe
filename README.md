@@ -38,11 +38,6 @@ $ python3 -m venv <name>
 2. Go to the directory /var/www through `$ cd /var/www/`
 3. Clone the repo and name the directory your chosen appname by running
   `$ sudo git clone https://github.com/VinnyLin72/nentindoe.git `
-   * The tree of the directory should be:
-      * scribble
-         * scribble
-         * scribble.wsgi
-         * scribble.conf
 4. Move the .conf file to the /etc/apache2/sites-available directory by running the command
   `$ sudo mv /var/www/nentindoe/nentindoe.conf /etc/apache2/sites-available`
 5. Go into the first directory named scribble and run both
