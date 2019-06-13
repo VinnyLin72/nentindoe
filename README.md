@@ -14,6 +14,7 @@ https://youtu.be/GE45Qb4TNws
   Templating
 
 ## Launch Codes
+### Local Host
 1. Open a terminal session.
 2. Create your own environment by typing (name is a placeholder for the name of the virtual environment of your choosing):
 ```
@@ -31,8 +32,28 @@ $ python3 -m venv <name>
 * Debugger PIN: 248-748-502
 ```
 8. Open a web browser and navigate to the link http://127.0.0.1:5000/.
-<!--
-### ALTERNATIVELY
-1. Open browser of choice.
-2. Enter the following url into the url bar:
-```157.230.187.86``` -->
+
+### Apache2
+1. ssh into your droplet through a user using `$ ssh <user>@<ip address>`
+2. Go to the directory /var/www through `$ cd /var/www/`
+3. Clone the repo and name the directory your chosen appname by running
+  `$ sudo git clone https://github.com/VinnyLin72/nentindoe.git `
+   * The tree of the directory should be:
+      * scribble
+         * scribble
+         * scribble.wsgi
+         * scribble.conf
+4. Move the .conf file to the /etc/apache2/sites-available directory by running the command
+  `$ sudo mv /var/www/nentindoe/nentindoe.conf /etc/apache2/sites-available`
+5. Go into the first directory named scribble and run both
+    1. `$ sudo chgrp -R www-data nentindoe`
+    2. `$ sudo chmod -R g+w nentindoe`
+6. Install virtualenv by running `$ pip3 install virtualenv`
+   * Make a venv by running `$ python3 -m venv VENV_NAME`
+   * Activate it by running `$ . ~/path_to_venv/VENV_NAME/bin/activate`
+   * Deactivate it by running `$ deactivate`
+7. Activate your virtual environment
+8. Go into the second directory named scribble and run `$ pip install -r requirements.txt`
+9. After running everything above, run `$ sudo service apache2 restart`
+   * Run this anytime you make changes as well
+10. Go to your ip address to view your app
