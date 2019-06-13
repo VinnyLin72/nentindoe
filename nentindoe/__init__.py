@@ -1,5 +1,5 @@
 #!/usr/bin/python3.6
-import os, csv, time, sqlite3, datetime, json
+import os, csv, time, sqlite3, datetime, json, random
 
 from flask import Flask, redirect, url_for, render_template, session, request, flash, get_flashed_messages
 
@@ -121,8 +121,53 @@ def adduser():
 def myGroups():
     if loggedin():
         my_groups=db.getJoined(session['user'])
-        return render_template("myGroups.html", groupList = my_groups)
+        cur=session['user']
+        group_dict={}
+        for m in my_groups:
+            picId= db.getGroupPicIds(m)
+            if picId:
+                group_dict[m]=picId[0]
+            else:
+                group_dict[m]=""
+        avalGroups=[]
+        for x in db.getGroups():
+            if x not in my_groups and x not in db.getPending(cur):
+                avalGroups.append(x)
+        deq=db.getRequests(cur)
+        reques=[]
+        for i in deq:
+            for u in deq[i]:
+                reques.append((u,i))
+        return render_template("myGroups.html", groupList = group_dict, joinGroups = avalGroups, reqs=reques)
     return redirect(url_for("home"))
+
+@app.route('/requestGroup', methods=['POST','GET'])
+def requestGroup():
+    if loggedin():
+        group=request.form['groups']
+        db.requestGroup(session['user'],group)
+        flash("Request Submitted")
+        return redirect(url_for("myGroups"))
+    return redirect(url_for("home"))
+
+@app.route('/evalGroup', methods=['POST','GET'])
+def evalGroup():
+    if loggedin():
+        req=request.form['req']
+        reql=req.split(":")
+        u=reql[1]
+        g=reql[0]
+        det=request.form['optradio']
+        num=0
+        if det=="Accept":
+            num=1
+        else:
+            num=0
+        print(db.evalRequest(g,session['user'],u,num))
+        return redirect(url_for("myGroups"))
+    return redirect(url_for("home"))
+
+
 
 @app.route('/newGroup')
 def newGroup():
@@ -161,7 +206,7 @@ def myDrawings():
 def save():
     if loggedin():
         iurl=request.form["imgurl"]
-        db.saveImage(iurl,session['user'],0)
+        db.saveImage(iurl,session['user'],1)
         myPics=db.getPictures(session['user'])
         return redirect(url_for("myDrawings"))
     return redirect(url_for("home"))

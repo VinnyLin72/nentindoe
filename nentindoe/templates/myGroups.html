@@ -13,25 +13,60 @@
     <div class="block-center">
         <div class="row">
             <div class="col-sm-10">
-                {% for g in groupList %}
-                <div class="col-sm-4" style="padding-top: 10px;">
-                    <div class="card" style="width: 24rem;">
-                        <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:15vw" src="" alt="No images in this group">
-                        <div class="card-body">
-                            <h5 class="card-title">{{g}}</h5>
-                            <p class="card-text">
-                                By:
-                            </p>
-                            <form action="/viewGroup" method="post">
-                                <button class="btn btn-primary" type="submit" name="groupName" value="{{ g }}">Enter Group</button>
-                            </form>
+                <div class="row">
+                    {% for g in groupList %}
+                    <div class="col-sm-4" style="padding-top: 10px;">
+                        <div class="card" style="width: 24rem;">
+                            <img class="card-img-top" size="100%" style="width:100%;object-fit:cover;height:16vw" src="{{ groupList[g] }}" alt="No images in this group">
+                            <div class="card-body">
+                                <h5 class="card-title">{{g}}</h5>
+                                <p class="card-text">
+                                    By:
+                                </p>
+                                <form action="/viewGroup" method="post">
+                                    <button class="btn btn-primary" type="submit" name="groupName" value="{{ g }}">Enter Group</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
             <div class="col-sm-2">
-                <a href="/newGroup" class="btn btn-primary"> Create a New Group </a>
+                <div class="row">
+                    <a href="/newGroup" class="btn btn-primary"> Create a New Group </a>
+                </div>
+            </div>
+        </div>
+        <div class="row ml-3 mt-3">
+            <div class="col-3">
+                <form action="/requestGroup" method="post">
+                    <div class="row">
+                            <label for="groups">Request to Join a Group</label>
+                            <select class="form-control" id="groups" name="groups">
+                                {% for g in joinGroups %}
+                                <option>{{ g }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-secondary m-1" type="submit" name="submit"> Submit Request</button>
+
+                    </div>
+                </form>
+            </div>
+            <div class="col-3  ml-5">
+                <form action="/evalGroup" method="post">
+
+                    <label for="groups">Evaluate Requests</label>
+                    <select class="form-control" id="req" name="req">
+                        {% for g in reqs %}
+                        <option>{{g[1]}}:{{g[0]}}</option>
+                        {% endfor %}
+                    </select>
+                    <label class="radio-inline mr-2"><input type="radio" name="optradio" value="Accept">Accept</label>
+                    <label class="radio-inline"><input type="radio" name="optradio" value="Deny">Deny</label>
+                    <br>
+                    <button class="btn btn-success m-1" type="submit" name="submit">Evaluate</button>
+                </form>
             </div>
         </div>
     </div>
