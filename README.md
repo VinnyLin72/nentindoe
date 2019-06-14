@@ -1,4 +1,4 @@
-x1# Nentindoe
+# Nentindoe
 ### Vincent Lin(PM), Yin On Chan, Mohtasim Howlader, Zane Wang
 
 ## Description
